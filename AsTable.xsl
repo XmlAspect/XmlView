@@ -3,15 +3,23 @@
 <xsl:stylesheet version="1.0"
 xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   <xsl:output
-  method="xml"
+  method="html"
   omit-xml-declaration="no"
   standalone="yes"
   indent="yes"
   />
   
   <xsl:template match="/">
-	  Table
-      <xsl:apply-templates select="*"></xsl:apply-templates> 
+	  <html>
+		  <body>
+			  Table
+			  <table>
+				  <tbody>
+					  <xsl:apply-templates select="*"></xsl:apply-templates>
+				  </tbody>
+			  </table>
+		  </body>
+	  </html>
   </xsl:template>
   <xsl:template match="*">
     <xsl:apply-templates select="*" ></xsl:apply-templates>
@@ -20,13 +28,13 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   <xsl:template match="country">
 	  <tr>
 		  <td>
-			  <xsl:value-of select="iso"/>
+			  <xsl:value-of select="@iso"/>
 		  </td>
 		  <td>
-			  <xsl:value-of select="name"/>
+			  <xsl:value-of select="@name"/>
 		  </td>
 		  <td>
-			  <xsl:value-of select="population"/>
+			  <xsl:value-of select="@population"/>
 		  </td>
 
 	  </tr>
