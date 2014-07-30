@@ -1,0 +1,50 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>XmlView - XmlAspect.org</title>
+    <style>
+        iframe{float:right; width:30%; height:10em;}
+        .BookmarkletTag{ font-size:large; }
+    </style>
+    <script type="text/javascript">
+        function BookmarkletBody(d,s,h)
+        {
+            d = document;
+            h = d.getElementsByTagName('head')[0];
+            s = d.createElementNS( h.namespaceURI || 'http://www.w3.org/1999/xhtml','script');
+            s.setAttribute('src', 'RunXslt.js');
+             
+            h.appendChild(s);
+        }
+        function InitBookmarks()
+        {
+            var s = "" + BookmarkletBody;
+            s = s.replace(/\s+/g, '').replace("BookmarkletBody", '');
+            document.getElementById("BookmarkletTag").href = "javascript:(" + s + ")()";
+        }
+    </script>
+</head>
+<body onload="InitBookmarks();">
+    <h1>XmlView - XmlAspect.org</h1>
+    <main>
+        <fieldset>
+            <legend>Intro</legend>
+            <code><iframe src="countries.xml"></iframe></code>
+        </fieldset>
+        <fieldset>
+            <legend>Bookmarklets</legend>
+            Drag this link onto toolbar <a id="BookmarkletTag" href="#">XmlView</a></fieldset>
+        <fieldset>
+            <legend>XSLT</legend>
+        </fieldset>
+    </main>
+    <fieldset>
+        <legend>Links</legend>
+        <ul>
+            <li><a href="https://github.com/XmlAspect/XmlView">Sources</a></li>
+            <li>Live docs and discussion at <a href="http://apifusion.com/wiki/index.php?title=XmlAspect.org/XmlView">ApiFusion.org</a></li>
+            <li>Country list assembled from <a href="https://github.com/umpirsky/country-list/blob/master/country/cldr/en/country.xml">umpirsky/country-list</a> </li>
+        </ul>
+    </fieldset>
+</body>
+</html>
