@@ -10,11 +10,11 @@
         function BookmarkletBody(d,s,h)
         {
             d = document;
-            h = d.getElementsByTagName('head')[0];
-            s = d.createElementNS( h.namespaceURI || 'http://www.w3.org/1999/xhtml','script');
+            h = d.getElementsByTagName('head')[0] || d.getElementsByTagName('div')[0];
+            s = d.createElementNS(h.namespaceURI || 'http://www.w3.org/1999/xhtml', 'script');
             s.setAttribute('src', 'RunXslt.js');
-             
-            h.appendChild(s);
+
+            h.appendChild(s);           
         }
         function InitBookmarks()
         {
