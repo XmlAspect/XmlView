@@ -1,11 +1,22 @@
 ﻿(function()
 {   var XHTML   = "http://www.w3.org/1999/xhtml"
-    ,   xslUrl  = "http://mylocal/xa/XmlView/AsTable.xsl"
+    ,   xslName = "AsTable.xsl"
+    ,   baseUrl = "http://xmlaspect.org/XmlView/"
+    ,   xslUrl  = baseUrl+xslName
     ,   b       = document.body || document.documentElement
     ,   msg     = createElement("div");
-
+    Array.prototype.forEach.call(document.getElementsByTagName('script'), function(el)
+    {   var url = el.src
+        ,   i   = url.indexOf('RunXslt.js');
+        if( i>0 )
+        {
+            baseUrl = url.substring(0,i);
+            xslUrl = baseUrl+"AsTable.xsl";
+        }
+    });
+    
     cleanElement(b);
-    msg.innerHTML = "<a href='" + xslUrl + "'> loading " + xslUrl + "</a>";
+    msg.innerHTML = "<a href='" + xslUrl + "'> loading " + xslName + "</a>";
     b.appendChild(msg);
 
     getXml(document.URL, function (xml)

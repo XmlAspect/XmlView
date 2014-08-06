@@ -4,6 +4,8 @@
     <title>XmlView - XmlAspect.org</title>
     <style>
         iframe{float:right; width:30%; height:10em;}
+        fieldset {display: inline-block;vertical-align: top;border-radius: 1em;border-bottom: none;border-left: none;}
+        input,iframe{width:100%;}
         .BookmarkletTag{ font-size:large; }
     </style>
     <script type="text/javascript">
@@ -22,36 +24,51 @@
             s = s.replace(/\s+/g, '').replace("BookmarkletBody", '');
             document.getElementById("BookmarkletTag").href = "javascript:(" + s + ")()";
         }
+        function OnLoad()
+        {
+            $("XmlUrl").addEventListener("change",function(ev)
+            {
+                $("demoFrame").src= ev.target.value;
+                InitBookmarks();
+            });
+            
+        }
+        function $(id){ return document.getElementById(id); }
+
     </script>
 </head>
-<body onload="InitBookmarks();">
+<body onload="OnLoad();">
     <h1>XmlView - XmlAspect.org</h1>
     <main>
         <fieldset>
             <legend>Intro</legend>
-            
+
         </fieldset>
         <fieldset>
             <legend>Bookmarklets</legend>
-            1. Drag this link onto toolbar <a id="BookmarkletTag" href="#">XmlView</a><br />
+            1. XML URL:
+            <input type="text" placeholder="XML url" title="XML Url" value="countriex.xml" id="XmlUrl"/>
+       1. drag this link onto toolbar><a id="BookmarkletTag" href="#">XmlView</a><br />
             2. open <a href="countries.xml">countries.xml</a><br />
             3. Click on bookmarklet to run <a href="RunXslt.js">RunXslt.js</a> which should re-render XML as table
         </fieldset>
         <fieldset>
             <legend>XSLT</legend>
-            <a href="AsTable.xsl">AsTable.xsl</a> and used by <a href="AsTable.xml">AsTable.xml</a> <br/>
+            <a href="AsTable.xsl">AsTable.xsl</a> and used by <a href="AsTable.xml">AsTable.xml</a> <br />
             TODO: AsBarChart, AsPieChart
         </fieldset>
+        <fieldset>
+            <legend>Links</legend>
+            <ul>
+                <li><a href="https://github.com/XmlAspect/XmlView">Sources</a></li>
+                <li>Live docs and discussion at <a href="http://apifusion.com/wiki/index.php?title=XmlAspect.org/XmlView">ApiFusion.org</a></li>
+                <li>Country list assembled from <a href="https://github.com/umpirsky/country-list/blob/master/country/cldr/en/country.xml">umpirsky/country-list</a> </li>
+                <li><hr /></li>
+                <li>TODO: CDN list</li>
+            </ul>
+        </fieldset>
     </main>
-    <fieldset>
-        <legend>Links</legend>
-        <ul>
-            <li><a href="https://github.com/XmlAspect/XmlView">Sources</a></li>
-            <li>Live docs and discussion at <a href="http://apifusion.com/wiki/index.php?title=XmlAspect.org/XmlView">ApiFusion.org</a></li>
-            <li>Country list assembled from <a href="https://github.com/umpirsky/country-list/blob/master/country/cldr/en/country.xml">umpirsky/country-list</a> </li>
-            <li><hr/></li>
-            <li>TODO: CDN list</li>
-        </ul>
-    </fieldset>
+    XML from Url:
+    <iframe id="demoFrame" >xml will be shown here</iframe>
 </body>
 </html>
