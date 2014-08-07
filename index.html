@@ -12,7 +12,7 @@
         function BookmarkletBody(d,s,h)
         {
             d = document;
-            h = d.getElementsByTagName('head')[0] || d.getElementsByTagName('div')[0];
+            h = d.getElementsByTagName('head')[0] || d.getElementsByTagName('div')[0] || document.documentElement;
             s = d.createElementNS(h.namespaceURI || 'http://www.w3.org/1999/xhtml', 'script');
             s.setAttribute('src', 'RunXslt.js');
 
@@ -46,8 +46,8 @@
         </fieldset>
         <fieldset>
             <legend>Bookmarklets</legend>
-            1. XML URL:
-            <input type="text" placeholder="XML url" title="XML Url" value="countriex.xml" id="XmlUrl"/>
+            1. Sample XML URL:
+            <input type="text" placeholder="XML url" title="XML Url" value="countries.xml" id="XmlUrl"/>
        1. drag this link onto toolbar><a id="BookmarkletTag" href="#">XmlView</a><br />
             2. open <a href="countries.xml">countries.xml</a><br />
             3. Click on bookmarklet to run <a href="RunXslt.js">RunXslt.js</a> which should re-render XML as table
