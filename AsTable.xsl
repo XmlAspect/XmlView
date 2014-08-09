@@ -16,7 +16,11 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 	  <html>
 		  <head>
 			  <style>
-				  table {border-collapse:collapse; width:100%;}
+				  table {border-collapse:collapse; width:100%; font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;}
+				  th {color: #FFFF80;background-image: linear-gradient(to bottom, #0F1FFF 0%, #AAAACC 100%); font-size:large;}
+				  tr:nth-child(even) {background-image: linear-gradient(to bottom, rgba(9, 16, 11, 0.3) 0%, rgba(90, 164, 110, 0.2) 100%);}
+				  tr:nth-child(odd) {background: rgba(255,255,255,0.2);}
+				  td{font-size:small;}
 			  </style>
 		  </head>
 		  <body>
