@@ -12,12 +12,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   <xsl:template match="/">
 	  <html>
 		  <body>
-			  Table
-			  <table>
-				  <tbody>
-					  <xsl:apply-templates select="*"></xsl:apply-templates>
-				  </tbody>
-			  </table>
+			  <xsl:apply-templates select="./*" mode="DisplayAsTable" />
 		  </body>
 	  </html>
   </xsl:template>
@@ -25,18 +20,40 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
     <xsl:apply-templates select="*" ></xsl:apply-templates>
   </xsl:template>
 
-  <xsl:template match="country">
-	  <tr>
-		  <td>
-			  <xsl:value-of select="@iso"/>
-		  </td>
-		  <td>
-			  <xsl:value-of select="@name"/>
-		  </td>
-		  <td>
-			  <xsl:value-of select="@population"/>
-		  </td>
+	<xsl:template match="*" mode="DisplayAsTable" >
+		<xsl:variable name="headers0"><xsl:apply-templates select="." mode="FindHeaders"></xsl:apply-templates></xsl:variable>
+		<xsl:variable name="headers" select="*[1]/@*|*[1]/*" /><!-- first child attributes and its children -->
+		<table>
+			<thead>
+				<tr>
+					<xsl:for-each select="$headers">
+						<th>
+							<xsl:value-of select="local-name()"/>
+						</th>
+					</xsl:for-each>
+				</tr>
+			</thead>
+			<tbody>
+				<xsl:for-each select="*">
+					<xsl:sort order="ascending" select="@continent"/>
+					<xsl:variable name="rowNode" select="." />
+					<tr>
+						<xsl:for-each select="$headers">
+							<xsl:variable name="key" select="name()" />
+							<td>
+								<xsl:value-of select="$rowNode/@*[local-name()=$key]"/>
+							</td>
+						</xsl:for-each>
+					</tr>
+				</xsl:for-each>
+			</tbody>
+		</table>
+	</xsl:template>
 
-	  </tr>
-  </xsl:template>
+	<xsl:template match="*" mode="FindHeaders">
+		<xsl:for-each select="*[1]/@*">
+			<xsl:element name="TH" ><xsl:attribute name="value" ><xsl:value-of select="."/></xsl:attribute></xsl:element>
+		</xsl:for-each>
+	</xsl:template>
+
 </xsl:stylesheet>

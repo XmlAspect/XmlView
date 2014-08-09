@@ -26,12 +26,14 @@
         }
         function OnLoad()
         {
-            $("XmlUrl").addEventListener("change",function(ev)
-            {
-                $("demoFrame").src= ev.target.value;
-                InitBookmarks();
-            });
-            
+            $("XmlUrl").addEventListener("input",UpdateXml);
+            InitBookmarks();
+            UpdateXml();
+        }
+        function UpdateXml()
+        {
+            $("demoFrame").src= $("XmlUrl").value;
+            InitBookmarks();
         }
         function $(id){ return document.getElementById(id); }
 
@@ -69,6 +71,8 @@
         </fieldset>
     </main>
     XML from Url:
-    <iframe id="demoFrame" >xml will be shown here</iframe>
+    <iframe id="demoFrame" >xml will be shown here
+        TODO: use OBJECT instead of IFRAME: http://stackoverflow.com/questions/7315218/chrome-and-firefox-are-not-displaying-most-pdf-documents-in-an-iframe
+    </iframe>
 </body>
 </html>
