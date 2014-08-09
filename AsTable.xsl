@@ -1,5 +1,8 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-
+<!-- Copyright (c) Simulation Works, LLC 2014 All Rights Reserved.
+This file is subject to the terms and conditions defined in
+file 'LICENSE', which is part of this source code package.
+-->
 <xsl:stylesheet version="1.0"
 xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   <xsl:output
@@ -11,6 +14,11 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   
   <xsl:template match="/">
 	  <html>
+		  <head>
+			  <style>
+				  table {border-collapse:collapse; width:100%;}
+			  </style>
+		  </head>
 		  <body>
 			  <xsl:apply-templates select="./*" mode="DisplayAsTable" />
 		  </body>
@@ -23,7 +31,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 	<xsl:template match="*" mode="DisplayAsTable" >
 		<xsl:variable name="headers0"><xsl:apply-templates select="." mode="FindHeaders"></xsl:apply-templates></xsl:variable>
 		<xsl:variable name="headers" select="*[1]/@*|*[1]/*" /><!-- first child attributes and its children -->
-		<table>
+		<table border="1">
 			<thead>
 				<tr>
 					<xsl:for-each select="$headers">
