@@ -5,7 +5,7 @@
     ,   xslUrl  = baseUrl+xslName
     ,   b       = document.body || document.documentElement
     ,   msg     = createElement("div");
-    Array.prototype.forEach.call(document.getElementsByTagName('script'), function(el)
+    forEach(document.getElementsByTagName('script'), function(el)
     {   var url = el.src
         ,   i   = url.indexOf('RunXslt.js');
         if( i>0 )
@@ -32,10 +32,14 @@
             b.replaceChild( r, b.firstChild );
         });
     });
-
+    function forEach( arr, callback, pThis )
+    {
+        for( var i=0; i<arr.length;i++)
+           callback.call( pThis||arr, arr[i], i , pThis||arr );
+    }
     function getXml( url, callback )
     {   var xhr = window.ActiveXObject ? new ActiveXObject("Msxml2.XMLHTTP") : new XMLHttpRequest();
-        xhr.url = url;
+ //       xhr.url = url;
         xhr.open("GET", url, false);
         try {xhr.responseType = "msxml-document"} catch(err) {} // Helping IE11
         xhr.onreadystatechange = function()
@@ -50,7 +54,7 @@
     }
     function createElement(name)
     {
-        return document.createElementNS(XHTML, name);
+        return document.createElementNS ? document.createElementNS(XHTML, name) : document.createElement(name);
     }
     function cleanElement( el )
     {

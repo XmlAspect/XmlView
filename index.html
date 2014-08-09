@@ -13,7 +13,7 @@
         {
             d = document;
             h = d.getElementsByTagName('head')[0] || d.getElementsByTagName('div')[0] || document.documentElement;
-            s = d.createElementNS(h.namespaceURI || 'http://www.w3.org/1999/xhtml', 'script');
+            s = d.createElementNS ? d.createElementNS(h.namespaceURI || 'http://www.w3.org/1999/xhtml', 'script') : d.createElement('script');
             s.setAttribute('src', 'RunXslt.js');
 
             h.appendChild(s);           
@@ -35,7 +35,13 @@
             $("demoFrame").src= $("XmlUrl").value;
             InitBookmarks();
         }
-        function $(id){ return document.getElementById(id); }
+        function $(id)
+        {   var r = document.getElementById(id); 
+            if( !r.addEventListener )
+                r.addEventListener = x_addEventListener;
+            return r;
+        }
+        function x_addEventListener ( ev, callback ){ return this.attachEvent( 'on'+ev,callback ) }
 
     </script>
 </head>
