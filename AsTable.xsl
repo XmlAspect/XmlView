@@ -2,25 +2,27 @@
 <!-- Copyright (c) Simulation Works, LLC 2014 All Rights Reserved.
 This file is subject to the terms and conditions defined in
 file 'LICENSE', which is part of this source code package.
--->
+--> 
 <xsl:stylesheet version="1.0"
+xmlns="http://www.w3.org/1999/xhtml"
 xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   <xsl:output
   method="html"
-  omit-xml-declaration="no"
+  omit-xml-declaration="yes"
   standalone="yes"
   indent="yes"
   />
-  
+
   <xsl:template match="/">
 	  <html>
 		  <head>
+			  <title>XmlView - XmlAspect.org</title>
 			  <style>
 				  table {border-collapse:collapse; width:100%; font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;}
 				  th {color: #FFFF80;background-image: linear-gradient(to bottom, #0F1FFF 0%, #AAAACC 100%); font-size:large;}
-				  tr:nth-child(even) {background-image: linear-gradient(to bottom, rgba(9, 16, 11, 0.3) 0%, rgba(90, 164, 110, 0.2) 100%);}
+				  tr:nth-child(even) {background-image: linear-gradient(to bottom, rgba(9, 16, 11, 0.2) 0%, rgba(90, 164, 110, 0.1) 100%);}
 				  tr:nth-child(odd) {background: rgba(255,255,255,0.2);}
-				  td{font-size:small;}
+				  td{font-size:small;border-bottom: none;border-top: none;}
 			  </style>
 		  </head>
 		  <body>
