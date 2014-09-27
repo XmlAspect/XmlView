@@ -2,134 +2,134 @@
 <?xml-stylesheet type="text/xsl" href="AsTable.xsl"?>
 <!-- http://api.geonames.org/wikipediaSearch?q=london&maxRows=10&username=demo&style=full -->
 <geonames>
-<entry>
-<lang>en</lang>
-<title>London</title>
-<summary>London is the capital city of England and of the United Kingdom. It is the most populous region, urban zone and metropolitan area in the United Kingdom. Standing on the River Thames, London has been a major settlement for two millennia, its history going back to its founding by the Romans, who named (...)</summary>
-<feature>city</feature>
-<countryCode>GB</countryCode>
-<elevation>2</elevation>
-<lat>51.5049</lat>
-<lng>-0.0786</lng>
-<wikipediaUrl>http://en.wikipedia.org/wiki/London</wikipediaUrl>
-<thumbnailImg>http://www.geonames.org/img/wikipedia/43000/thumb-42715-100.jpg</thumbnailImg>
-<rank>100</rank>
-</entry>
-<entry>
-<lang>en</lang>
-<title>London, Ontario</title>
-<summary>London is a city in Southwestern Ontario, Canada, situated along the Quebec City–Windsor Corridor. The city has a population of 366,151 according to the 2011 Canadian census. London is at the forks of the non-navigable Thames River, approximately halfway between Toronto, Ontario and Detroit, (...)</summary>
-<feature>city</feature>
-<countryCode>CA</countryCode>
-<elevation>262</elevation>
-<lat>42.9837</lat>
-<lng>-81.2497</lng>
-<wikipediaUrl>http://en.wikipedia.org/wiki/London%2C_Ontario</wikipediaUrl>
-<thumbnailImg>http://www.geonames.org/img/wikipedia/58000/thumb-57388-100.jpg</thumbnailImg>
-<rank>100</rank>
-</entry>
-<entry>
-<lang>en</lang>
-<title>East London, Eastern Cape</title>
-<summary>East London (Afrikaans: Oos-Londen) is a city on the southeast coast of South Africa, situated at 32.97°S and 27.87°E in the Buffalo City Metropolitan Municipality of the Eastern Cape province. The city lies on the Indian Ocean coast, largely between the Buffalo River and the Nahoon River, and hosts (...)</summary>
-<feature>city</feature>
-<countryCode>ZA</countryCode>
-<elevation>60</elevation>
-<lat>-33.0146</lat>
-<lng>27.9036</lng>
-<wikipediaUrl>http://en.wikipedia.org/wiki/East_London%2C_Eastern_Cape</wikipediaUrl>
-<thumbnailImg>http://www.geonames.org/img/wikipedia/138000/thumb-137098-100.jpg</thumbnailImg>
-<rank>100</rank>
-</entry>
-<entry>
-<lang>en</lang>
-<title>London Borough of Lewisham</title>
-<summary>The London Borough of Lewisham (pronunciation) is a London borough in south-east London, England and forms part of Inner London. The principal settlement of the borough is Lewisham. The local authority is Lewisham London Borough Council and it is based in Catford (...)</summary>
-<feature>adm1st</feature>
-<countryCode>GB</countryCode>
-<elevation>14</elevation>
-<lat>51.4569</lat>
-<lng>-0.016</lng>
-<wikipediaUrl>http://en.wikipedia.org/wiki/London_Borough_of_Lewisham</wikipediaUrl>
-<thumbnailImg>http://www.geonames.org/img/wikipedia/157000/thumb-156609-100.jpg</thumbnailImg>
-<rank>98</rank>
-</entry>
-<entry>
-<lang>en</lang>
-<title>New London, Connecticut</title>
-<summary>New London is a city and a port of entry on the northeast coast of the United States. It is located at the mouth of the Thames River (rhymes with "James" with the "th" pronounced as in "thick") in New London County, southeastern Connecticut (...)</summary>
-<feature/>
-<countryCode>US</countryCode>
-<elevation>27</elevation>
-<lat>41.3556</lat>
-<lng>-72.1008</lng>
-<wikipediaUrl>http://en.wikipedia.org/wiki/New_London%2C_Connecticut</wikipediaUrl>
-<thumbnailImg>http://www.geonames.org/img/wikipedia/160000/thumb-159123-100.jpg</thumbnailImg>
-<rank>100</rank>
-</entry>
-<entry>
-<lang>en</lang>
-<title>London Borough of Richmond upon Thames</title>
-<summary>The London Borough of Richmond upon Thames (pronunciation) in south-west London, England, forms part of Outer London and is the only London borough on both sides of the River Thames. It was created in 1965 when three smaller council areas amalgamated under the London Government Act 1963 (...)</summary>
-<feature>adm1st</feature>
-<countryCode>GB</countryCode>
-<elevation>13</elevation>
-<lat>51.4613</lat>
-<lng>-0.3035</lng>
-<wikipediaUrl>http://en.wikipedia.org/wiki/London_Borough_of_Richmond_upon_Thames</wikipediaUrl>
-<thumbnailImg>http://www.geonames.org/img/wikipedia/146000/thumb-145782-100.jpg</thumbnailImg>
-<rank>100</rank>
-</entry>
-<entry>
-<lang>en</lang>
-<title>London Borough of Southwark</title>
-<summary>The London Borough of Southwark "Southwark", in The Columbia Lippincott Gazetteer of the World (1952), New York: Colubia University Press. is a London borough in south east London. It is directly south of the River Thames and the City of London, and forms part of Inner London.  (...)</summary>
-<feature>adm1st</feature>
-<countryCode>GB</countryCode>
-<elevation>9</elevation>
-<lat>51.4988</lat>
-<lng>-0.0901</lng>
-<wikipediaUrl>http://en.wikipedia.org/wiki/London_Borough_of_Southwark</wikipediaUrl>
-<thumbnailImg>http://www.geonames.org/img/wikipedia/38000/thumb-37850-100.jpg</thumbnailImg>
-<rank>100</rank>
-</entry>
-<entry>
-<lang>en</lang>
-<title>Museum of London</title>
-<summary>The Museum of London documents the history of London from prehistoric to modern times. The museum is located on London Wall, close to the Barbican Centre as part of the striking Barbican complex of buildings created in the 1960s and 1970s as an innovative approach to re-development within a (...)</summary>
-<feature>landmark</feature>
-<countryCode>GB</countryCode>
-<elevation>38</elevation>
-<lat>51.5177</lat>
-<lng>-0.0968</lng>
-<wikipediaUrl>http://en.wikipedia.org/wiki/Museum_of_London</wikipediaUrl>
-<thumbnailImg>http://www.geonames.org/img/wikipedia/13000/thumb-12748-100.jpg</thumbnailImg>
-<rank>98</rank>
-</entry>
-<entry>
-<lang>en</lang>
-<title>London Borough of Croydon</title>
-<summary>The London Borough of Croydon (pronunciation) is a London borough in South London, England and is part of Outer London. It covers an area of and is the largest London borough by population. It is the southernmost borough of London (...)</summary>
-<feature>adm1st</feature>
-<countryCode>GB</countryCode>
-<elevation>62</elevation>
-<lat>51.3724</lat>
-<lng>-0.1004</lng>
-<wikipediaUrl>http://en.wikipedia.org/wiki/London_Borough_of_Croydon</wikipediaUrl>
-<thumbnailImg>http://www.geonames.org/img/wikipedia/115000/thumb-114716-100.jpg</thumbnailImg>
-<rank>100</rank>
-</entry>
-<entry>
-<lang>en</lang>
-<title>London Eye</title>
-<summary>The London Eye is a giant Ferris wheel on the South Bank of the River Thames in London, England. Also known as the Millennium Wheel, its official name was originally the British Airways London Eye, then the Merlin Entertainments London Eye, and since 20 January 2011, the EDF Energy London Eye (...)</summary>
-<feature>landmark</feature>
-<countryCode>GB</countryCode>
-<elevation>3</elevation>
-<lat>51.5033</lat>
-<lng>-0.1197</lng>
-<wikipediaUrl>http://en.wikipedia.org/wiki/London_Eye</wikipediaUrl>
-<thumbnailImg>http://www.geonames.org/img/wikipedia/153000/thumb-152429-100.jpg</thumbnailImg>
-<rank>100</rank>
-</entry>
+	<entry>
+		<lang>en</lang>
+		<title>London</title>
+		<summary>London is the capital city of England and of the United Kingdom. It is the most populous region, urban zone and metropolitan area in the United Kingdom. Standing on the River Thames, London has been a major settlement for two millennia, its history going back to its founding by the Romans, who named (...)</summary>
+		<feature>city</feature>
+		<countryCode>GB</countryCode>
+		<elevation>2</elevation>
+		<lat>51.5049</lat>
+		<lng>-0.0786</lng>
+		<wikipediaUrl>http://en.wikipedia.org/wiki/London</wikipediaUrl>
+		<thumbnailImg>http://www.geonames.org/img/wikipedia/43000/thumb-42715-100.jpg</thumbnailImg>
+		<rank>100</rank>
+	</entry>
+	<entry>
+		<lang>en</lang>
+		<title>London, Ontario</title>
+		<summary>London is a city in Southwestern Ontario, Canada, situated along the Quebec City–Windsor Corridor. The city has a population of 366,151 according to the 2011 Canadian census. London is at the forks of the non-navigable Thames River, approximately halfway between Toronto, Ontario and Detroit, (...)</summary>
+		<feature>city</feature>
+		<countryCode>CA</countryCode>
+		<elevation>262</elevation>
+		<lat>42.9837</lat>
+		<lng>-81.2497</lng>
+		<wikipediaUrl>http://en.wikipedia.org/wiki/London%2C_Ontario</wikipediaUrl>
+		<thumbnailImg>http://www.geonames.org/img/wikipedia/58000/thumb-57388-100.jpg</thumbnailImg>
+		<rank>100</rank>
+	</entry>
+	<entry>
+		<lang>en</lang>
+		<title>East London, Eastern Cape</title>
+		<summary>East London (Afrikaans: Oos-Londen) is a city on the southeast coast of South Africa, situated at 32.97°S and 27.87°E in the Buffalo City Metropolitan Municipality of the Eastern Cape province. The city lies on the Indian Ocean coast, largely between the Buffalo River and the Nahoon River, and hosts (...)</summary>
+		<feature>city</feature>
+		<countryCode>ZA</countryCode>
+		<elevation>60</elevation>
+		<lat>-33.0146</lat>
+		<lng>27.9036</lng>
+		<wikipediaUrl>http://en.wikipedia.org/wiki/East_London%2C_Eastern_Cape</wikipediaUrl>
+		<thumbnailImg>http://www.geonames.org/img/wikipedia/138000/thumb-137098-100.jpg</thumbnailImg>
+		<rank>100</rank>
+	</entry>
+	<entry>
+		<lang>en</lang>
+		<title>London Borough of Lewisham</title>
+		<summary>The London Borough of Lewisham (pronunciation) is a London borough in south-east London, England and forms part of Inner London. The principal settlement of the borough is Lewisham. The local authority is Lewisham London Borough Council and it is based in Catford (...)</summary>
+		<feature>adm1st</feature>
+		<countryCode>GB</countryCode>
+		<elevation>14</elevation>
+		<lat>51.4569</lat>
+		<lng>-0.016</lng>
+		<wikipediaUrl>http://en.wikipedia.org/wiki/London_Borough_of_Lewisham</wikipediaUrl>
+		<thumbnailImg>http://www.geonames.org/img/wikipedia/157000/thumb-156609-100.jpg</thumbnailImg>
+		<rank>98</rank>
+	</entry>
+	<entry>
+		<lang>en</lang>
+		<title>New London, Connecticut</title>
+		<summary>New London is a city and a port of entry on the northeast coast of the United States. It is located at the mouth of the Thames River (rhymes with "James" with the "th" pronounced as in "thick") in New London County, southeastern Connecticut (...)</summary>
+		<feature/>
+		<countryCode>US</countryCode>
+		<elevation>27</elevation>
+		<lat>41.3556</lat>
+		<lng>-72.1008</lng>
+		<wikipediaUrl>http://en.wikipedia.org/wiki/New_London%2C_Connecticut</wikipediaUrl>
+		<thumbnailImg>http://www.geonames.org/img/wikipedia/160000/thumb-159123-100.jpg</thumbnailImg>
+		<rank>100</rank>
+	</entry>
+	<entry>
+		<lang>en</lang>
+		<title>London Borough of Richmond upon Thames</title>
+		<summary>The London Borough of Richmond upon Thames (pronunciation) in south-west London, England, forms part of Outer London and is the only London borough on both sides of the River Thames. It was created in 1965 when three smaller council areas amalgamated under the London Government Act 1963 (...)</summary>
+		<feature>adm1st</feature>
+		<countryCode>GB</countryCode>
+		<elevation>13</elevation>
+		<lat>51.4613</lat>
+		<lng>-0.3035</lng>
+		<wikipediaUrl>http://en.wikipedia.org/wiki/London_Borough_of_Richmond_upon_Thames</wikipediaUrl>
+		<thumbnailImg>http://www.geonames.org/img/wikipedia/146000/thumb-145782-100.jpg</thumbnailImg>
+		<rank>100</rank>
+	</entry>
+	<entry>
+		<lang>en</lang>
+		<title>London Borough of Southwark</title>
+		<summary>The London Borough of Southwark "Southwark", in The Columbia Lippincott Gazetteer of the World (1952), New York: Colubia University Press. is a London borough in south east London. It is directly south of the River Thames and the City of London, and forms part of Inner London.  (...)</summary>
+		<feature>adm1st</feature>
+		<countryCode>GB</countryCode>
+		<elevation>9</elevation>
+		<lat>51.4988</lat>
+		<lng>-0.0901</lng>
+		<wikipediaUrl>http://en.wikipedia.org/wiki/London_Borough_of_Southwark</wikipediaUrl>
+		<thumbnailImg>http://www.geonames.org/img/wikipedia/38000/thumb-37850-100.jpg</thumbnailImg>
+		<rank>100</rank>
+	</entry>
+	<entry>
+		<lang>en</lang>
+		<title>Museum of London</title>
+		<summary>The Museum of London documents the history of London from prehistoric to modern times. The museum is located on London Wall, close to the Barbican Centre as part of the striking Barbican complex of buildings created in the 1960s and 1970s as an innovative approach to re-development within a (...)</summary>
+		<feature>landmark</feature>
+		<countryCode>GB</countryCode>
+		<elevation>38</elevation>
+		<lat>51.5177</lat>
+		<lng>-0.0968</lng>
+		<wikipediaUrl>http://en.wikipedia.org/wiki/Museum_of_London</wikipediaUrl>
+		<thumbnailImg>http://www.geonames.org/img/wikipedia/13000/thumb-12748-100.jpg</thumbnailImg>
+		<rank>98</rank>
+	</entry>
+	<entry>
+		<lang>en</lang>
+		<title>London Borough of Croydon</title>
+		<summary>The London Borough of Croydon (pronunciation) is a London borough in South London, England and is part of Outer London. It covers an area of and is the largest London borough by population. It is the southernmost borough of London (...)</summary>
+		<feature>adm1st</feature>
+		<countryCode>GB</countryCode>
+		<elevation>62</elevation>
+		<lat>51.3724</lat>
+		<lng>-0.1004</lng>
+		<wikipediaUrl>http://en.wikipedia.org/wiki/London_Borough_of_Croydon</wikipediaUrl>
+		<thumbnailImg>http://www.geonames.org/img/wikipedia/115000/thumb-114716-100.jpg</thumbnailImg>
+		<rank>100</rank>
+	</entry>
+	<entry>
+		<lang>en</lang>
+		<title>London Eye</title>
+		<summary>The London Eye is a giant Ferris wheel on the South Bank of the River Thames in London, England. Also known as the Millennium Wheel, its official name was originally the British Airways London Eye, then the Merlin Entertainments London Eye, and since 20 January 2011, the EDF Energy London Eye (...)</summary>
+		<feature>landmark</feature>
+		<countryCode>GB</countryCode>
+		<elevation>3</elevation>
+		<lat>51.5033</lat>
+		<lng>-0.1197</lng>
+		<wikipediaUrl>http://en.wikipedia.org/wiki/London_Eye</wikipediaUrl>
+		<thumbnailImg>http://www.geonames.org/img/wikipedia/153000/thumb-152429-100.jpg</thumbnailImg>
+		<rank>100</rank>
+	</entry>
 </geonames>
