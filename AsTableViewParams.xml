@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<?xml-stylesheet type="text/xsl" href="AsTable.xsl"?>
+<view xmlns="xmlaspect.org/XmlView">
+	<style type="text/css">.continent:first-letter { color:red; font-size:larger; } </style>
+	<data select="/countries/country">
+		<sort select="@continent" order="ascending" >
+			<sort select="@name" order="ascending" />
+		</sort>
+	</data>
+</view>

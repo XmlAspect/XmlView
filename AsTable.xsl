@@ -12,22 +12,36 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   standalone="yes"
   indent="yes"
   />
+	<xsl:param name="url" />
+	<xsl:param name="baseUrl" />
+	<xsl:param name="sort" />
 
-  <xsl:template match="/">
+
+	<xsl:template match="/">
 	  <html>
 		  <head>
 			  <title>XmlView - XmlAspect.org</title>
 			  <style>
+				  body{padding:0;margin:0;}
 				  table {border-collapse:collapse; width:100%; font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;}
 				  th {color: #FFFF80;background-image: linear-gradient(to bottom, #0F1FFF 0%, #AAAACC 100%); font-size:large;}
 				  tr:nth-child(even) {background-image: linear-gradient(to bottom, rgba(9, 16, 11, 0.2) 0%, rgba(90, 164, 110, 0.1) 100%);}
 				  tr:nth-child(odd) {background: rgba(255,255,255,0.2);}
 				  td{font-size:small;border-bottom: none;border-top: none;}
+				  th a{float:right; padding-right:0.5em;}
 			  </style>
 		  </head>
 		  <body>
+			  Sort:<xsl:value-of select="sort"/>
+			  <xsl:if test="$sort"></xsl:if>
+
 			  <xsl:apply-templates select="./*" mode="DisplayAsTable" />
 		  </body>
+		  <head>
+			  <script>
+				  //document.body
+			  </script>
+		  </head>
 	  </html>
   </xsl:template>
   <xsl:template match="*">
@@ -42,6 +56,9 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 				<tr>
 					<xsl:for-each select="$headers">
 						<th>
+							<xsl:attribute name="col" ><xsl:value-of select="local-name()"/></xsl:attribute>
+							<za href="#">
+								&#9650;&#9660;&#9674;<sub>2</sub></za>
 							<xsl:value-of select="local-name()"/>
 						</th>
 					</xsl:for-each>
