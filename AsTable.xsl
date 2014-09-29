@@ -5,7 +5,9 @@ file 'LICENSE', which is part of this source code package.
 -->
 <xsl:stylesheet version="1.0"
 xmlns="http://www.w3.org/1999/xhtml"
-xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+xmlns:xv="http://xmlaspect.org/XmlView" 
+>
 	<xsl:output
 	method="html"
 	omit-xml-declaration="yes"
@@ -33,10 +35,16 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 				</style>
 			</head>
 			<body>
-				Sort:<xsl:value-of select="sort"/>
+Sort:<xsl:value-of select="sort"/>
 				<xsl:if test="$sort"></xsl:if>
-
-				<xsl:apply-templates select="./*" />
+<hr/>
+				<xsl:variable name="sortedData">
+					<xsl:call-template name="StartSort">
+						<xsl:with-param name="data" select="*"/>
+						<xsl:with-param name="sortNode" select="document('sortParameters.xml')/*"/>
+					</xsl:call-template>
+				</xsl:variable>
+				<xsl:apply-templates select="$sortedData" mode="DisplayAsTable" />
 			</body>
 			<head>
 				<script>
@@ -46,6 +54,36 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 		</html>
 	</xsl:template>
 
+	<xsl:template match="xv:sort" mode="SortSequence">
+		<xsl:param name="data" />
+		<xsl:param name="orderInSort" select="1" />
+		<xsl:variable name="sorted">
+			<xsl:call-template name="StartSort">
+				<xsl:with-param name="data" select="$data"/>
+				<xsl:with-param name="sortNode" select="*"/>
+			</xsl:call-template>
+		</xsl:variable>
+		<xsl:choose>
+			<xsl:when test="*">
+				<xsl:apply-templates mode="SortSequence" select="*">
+					<xsl:with-param name="data" select="$sorted"/>
+					<xsl:with-param name="orderInSort" select="$orderInSort + 1"/>
+				</xsl:apply-templates>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:copy-of select="$data"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
+	<xsl:template name="StartSort">
+		<xsl:param name="data"/>
+		<xsl:param name="sortNode"/>
+		<xsl:apply-templates mode="SortSequence" select="$sortNode">
+			<xsl:with-param name="data" />		
+		</xsl:apply-templates>
+	</xsl:template>
+	
 	<xsl:template match="*">
 		<xsl:variable name="firstChildName" select="name(./*[1])"/>
 		<xsl:choose>
@@ -66,11 +104,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
 	<xsl:template match="*" mode="DisplayAsTable" >
 		<xsl:param name="childName" select="name(*[1])"/>
-		<xsl:variable name="headers0">
-			<xsl:apply-templates select="." mode="FindHeaders"></xsl:apply-templates>
-		</xsl:variable>
-		<xsl:variable name="headers" select="*[1]/@*|*[1]/*" />
-		<!-- first child attributes and its children -->
+		<xsl:variable name="headers" select="*[1]/@*|*[1]/*" />		<!-- first child attributes and its children -->
 		
 		<table border="1">
 			<caption><!-- todo collapsible -->
@@ -83,9 +117,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 							<xsl:attribute name="col" >
 								<xsl:value-of select="local-name()"/>
 							</xsl:attribute>
-							<za href="#">
-								&#9650;&#9660;&#9674;<sub>2</sub>
-							</za>
+							<a href="#"><span> </span><sub> </sub></a>
 							<xsl:value-of select="local-name()"/>
 						</th>
 					</xsl:for-each>
@@ -93,7 +125,6 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 			</thead>
 			<tbody>
 				<xsl:for-each select="*">
-					<xsl:sort order="ascending" select="@continent"/>
 					<xsl:variable name="rowNode" select="." />
 					<tr>
 						<xsl:for-each select="$headers">
@@ -107,15 +138,4 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 			</tbody>
 		</table>
 	</xsl:template>
-
-	<xsl:template match="*" mode="FindHeaders">
-		<xsl:for-each select="*[1]/@*">
-			<xsl:element name="TH" >
-				<xsl:attribute name="value" >
-					<xsl:value-of select="."/>
-				</xsl:attribute>
-			</xsl:element>
-		</xsl:for-each>
-	</xsl:template>
-
 </xsl:stylesheet>
