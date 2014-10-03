@@ -5,8 +5,15 @@ file 'LICENSE', which is part of this source code package.
 -->
 <xsl:stylesheet version="1.0"
 xmlns="http://www.w3.org/1999/xhtml"
+xmlns:xhtml="http://www.w3.org/1999/xhtml"
 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+xmlns:func="http://exslt.org/functions" 
+xmlns:my="my://own.uri" 
 xmlns:xv="http://xmlaspect.org/XmlView" 
+	xmlns:exslt="http://exslt.org/common"
+	xmlns:msxsl="urn:schemas-microsoft-com:xslt"
+	exclude-result-prefixes="xhtml exslt msxsl"
+	 extension-element-prefixes="func"
 >
 	<xsl:output
 	method="html"
@@ -17,8 +24,23 @@ xmlns:xv="http://xmlaspect.org/XmlView"
 	<xsl:param name="url" />
 	<xsl:param name="baseUrl" />
 	<xsl:param name="sort" />
-
-
+	<!-- select = "exslt:node-set($x) IE compatibility -->
+		<msxsl:script language="JScript" implements-prefix="exslt">
+			<![CDATA[
+				var dd = eval("this['node-set'] =  function (x) { return x; }");
+			]]>
+		</msxsl:script>
+	
+	
+	
+	
+	
+<func:function name="my:count-elements">
+      <func:result select="count(//*)" />
+</func:function>
+	
+	
+	
 	<xsl:template match="/">
 		<html>
 			<head>
@@ -33,6 +55,7 @@ xmlns:xv="http://xmlaspect.org/XmlView"
 					td{font-size:small;border-bottom: none;border-top: none;}
 					th a{float:right; padding-right:0.5em;}
 				</style>
+				<script type="text/javascript" src="XmlView.js"></script>
 			</head>
 			<body>
 Sort:<xsl:value-of select="sort"/>
@@ -40,11 +63,11 @@ Sort:<xsl:value-of select="sort"/>
 <hr/>
 				<xsl:variable name="sortedData">
 					<xsl:call-template name="StartSort">
-						<xsl:with-param name="data" select="*"/>
-						<xsl:with-param name="sortNode" select="document('sortParameters.xml')/*"/>
+						<xsl:with-param name="data" select="*" />
+						<xsl:with-param name="sortNode" select="document('sortParameters.xml')/*" />
 					</xsl:call-template>
 				</xsl:variable>
-				<xsl:apply-templates select="$sortedData" mode="DisplayAsTable" />
+				<xsl:apply-templates select="exslt:node-set($sortedData)" mode="DisplayAsTable" />
 			</body>
 			<head>
 				<script>
@@ -54,36 +77,32 @@ Sort:<xsl:value-of select="sort"/>
 		</html>
 	</xsl:template>
 
-	<xsl:template match="xv:sort" mode="SortSequence">
-		<xsl:param name="data" />
-		<xsl:param name="orderInSort" select="1" />
-		<xsl:variable name="sorted">
-			<xsl:call-template name="StartSort">
-				<xsl:with-param name="data" select="$data"/>
-				<xsl:with-param name="sortNode" select="*"/>
-			</xsl:call-template>
-		</xsl:variable>
-		<xsl:choose>
-			<xsl:when test="*">
-				<xsl:apply-templates mode="SortSequence" select="*">
-					<xsl:with-param name="data" select="$sorted"/>
-					<xsl:with-param name="orderInSort" select="$orderInSort + 1"/>
-				</xsl:apply-templates>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:copy-of select="$data"/>
-			</xsl:otherwise>
-		</xsl:choose>
-	</xsl:template>
+<xsl:template name="StartSort">
+	<xsl:param name="data"/>
+	<xsl:param name="sortNode"/>
+	<xsl:apply-templates mode="SortData" select="$data">
+		<xsl:with-param name="sortNode" select="$sortNode" />		
+	</xsl:apply-templates>
+</xsl:template>
 	
-	<xsl:template name="StartSort">
-		<xsl:param name="data"/>
-		<xsl:param name="sortNode"/>
-		<xsl:apply-templates mode="SortSequence" select="$sortNode">
-			<xsl:with-param name="data" />		
+<xsl:template mode="SortData" match="*[*]">
+	<xsl:param name="sortNode"/>
+	<xsl:copy>
+		<xsl:copy-of select="@*"/>		
+		<xsl:apply-templates mode="SortData" select="*">
+			<xsl:sort data-type="text" order="descending" select="@stub-will-be-replaced"/>
+			<xsl:with-param name="sortNode" select="$sortNode" />
 		</xsl:apply-templates>
-	</xsl:template>
+	</xsl:copy>
+</xsl:template>
+<xsl:template mode="SortData" match="*">
+	<xsl:param name="sortNode"/>
+	<xsl:copy-of select="."/>
+</xsl:template>
 	
+<!--
+<xsl:include href="sortParameters.xsl"/>	
+-->		
 	<xsl:template match="*">
 		<xsl:variable name="firstChildName" select="name(./*[1])"/>
 		<xsl:choose>
@@ -105,17 +124,24 @@ Sort:<xsl:value-of select="sort"/>
 	<xsl:template match="*" mode="DisplayAsTable" >
 		<xsl:param name="childName" select="name(*[1])"/>
 		<xsl:variable name="headers" select="*[1]/@*|*[1]/*" />		<!-- first child attributes and its children -->
+		<xsl:variable name="collection"  select="."/>
+		<xsl:variable name="collectionPath"><xsl:apply-templates mode="xpath" select="."></xsl:apply-templates></xsl:variable>
 		
 		<table border="1">
 			<caption><!-- todo collapsible -->
-				<var><xsl:value-of select="$childName"/></var>
+				<var>
+					<xsl:attribute name="title"><xsl:value-of select="$collectionPath"/></xsl:attribute>
+					<xsl:value-of select="$childName"/>
+				</var>
 			</caption>
 			<thead>
 				<tr>
 					<xsl:for-each select="$headers">
+						<xsl:variable name="h" select="."/>
+
 						<th>
-							<xsl:attribute name="col" >
-								<xsl:value-of select="local-name()"/>
+							<xsl:attribute name="title" >
+								<xsl:value-of select="$collectionPath"/>/<xsl:if test="count(.|../@*)=count(../@*)">@</xsl:if><xsl:value-of select="local-name()"/>
 							</xsl:attribute>
 							<a href="#"><span> </span><sub> </sub></a>
 							<xsl:value-of select="local-name()"/>
@@ -130,6 +156,7 @@ Sort:<xsl:value-of select="sort"/>
 						<xsl:for-each select="$headers">
 							<xsl:variable name="key" select="name()" />
 							<td>
+								<xsl:attribute name="title"><xsl:apply-templates mode="xpath" select="."></xsl:apply-templates></xsl:attribute>
 								<xsl:value-of select="$rowNode/@*[local-name()=$key] | $rowNode/*[local-name()=$key]"/>
 							</td>
 						</xsl:for-each>
@@ -138,4 +165,48 @@ Sort:<xsl:value-of select="sort"/>
 			</tbody>
 		</table>
 	</xsl:template>
+	
+	<!-- XmlAspect/XOR/XPath/Dom2XPath.xsl -->
+	<!-- Root -->
+	<xsl:template match="/" mode="xpath">
+		<xsl:text>/</xsl:text>
+	</xsl:template>
+
+	<!-- Element -->
+	<xsl:template match="*" mode="xpath">
+		<!-- Process ancestors first -->
+		<xsl:apply-templates select=".." mode="xpath"/>
+
+		<!-- Output / if not already output by the root node -->
+		<xsl:if test="../..">/</xsl:if>
+
+		<!-- Output the name of the element -->
+		<xsl:value-of select="name()"/>
+
+		<!-- Add the element's position to pinpoint the element exactly -->
+		<xsl:if test="count(../*[name() = name(current())]) > 1">
+			<xsl:text>[</xsl:text>
+			<xsl:value-of
+				select="count(preceding-sibling::*[name() = name(current())]) +1"/>
+			<xsl:text>]</xsl:text>
+		</xsl:if>
+
+		<!-- Add 'name' predicate as a hint of which element -->
+		<xsl:if test="@name">
+			<xsl:text/>[@name="<xsl:value-of select="@name"/>"]<xsl:text/>
+		</xsl:if>
+	</xsl:template>
+
+	<!-- Attribute -->
+	<xsl:template match="@*" mode="xpath">
+		<!-- Process ancestors first -->
+		<xsl:apply-templates select=".." mode="xpath"/>
+
+		<!-- Output the name of the attribute -->
+		<xsl:text/>/@<xsl:value-of select="name()"/>
+
+		<!-- Output the attribute's value as a predicate -->
+		<xsl:text/>[.="<xsl:value-of select="."/>"]<xsl:text/>
+	</xsl:template>
+	
 </xsl:stylesheet>
