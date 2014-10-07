@@ -49,18 +49,15 @@ xmlns:xv="http://xmlaspect.org/XmlView"
 					body{padding:0;margin:0;}
 					table {border-collapse:collapse; width:100%; font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;}
 					caption{ text-align:left; }
-					th {color: #FFFF80;background-image: linear-gradient(to bottom, #0F1FFF 0%, #AAAACC 100%); font-size:large;}
-					tr:nth-child(even) {background-image: linear-gradient(to bottom, rgba(9, 16, 11, 0.2) 0%, rgba(90, 164, 110, 0.1) 100%);}
-					tr:nth-child(odd) {background: rgba(255,255,255,0.2);}
+					th					{background-image: linear-gradient(to bottom, #0F1FFF 0%, #AAAACC 100%); font-size:large;}
+					tr:nth-child(even)	{background-image: linear-gradient(to bottom, rgba(9, 16, 11, 0.2) 0%, rgba(90, 164, 110, 0.1) 100%);}
+					tr:nth-child(odd)	{background: rgba(255,255,255,0.2);}
 					td{font-size:small;border-bottom: none;border-top: none;}
-					th a{float:right; padding-right:0.5em;}
+					th a{ color: #FFFF80; text-decoration:none;}
 				</style>
 				<script type="text/javascript" src="XmlView.js"></script>
 			</head>
 			<body>
-Sort:<xsl:value-of select="sort"/>
-				<xsl:if test="$sort"></xsl:if>
-<hr/>
 				<xsl:variable name="sortedData">
 					<xsl:call-template name="StartSort">
 						<xsl:with-param name="data" select="*" />
@@ -71,7 +68,7 @@ Sort:<xsl:value-of select="sort"/>
 			</body>
 			<head>
 				<script>
-					//document.body
+					//function sortTH( th ){		alert( th.title );	}
 				</script>
 			</head>
 		</html>
@@ -90,7 +87,7 @@ Sort:<xsl:value-of select="sort"/>
 	<xsl:copy>
 		<xsl:copy-of select="@*"/>		
 		<xsl:apply-templates mode="SortData" select="*">
-			<xsl:sort data-type="text" order="descending" select="@stub-will-be-replaced"/>
+			<xsl:sort data-type="text" order="ascending" select="@stub-will-be-replaced"/>
 			<xsl:with-param name="sortNode" select="$sortNode" />
 		</xsl:apply-templates>
 	</xsl:copy>
@@ -137,14 +134,15 @@ Sort:<xsl:value-of select="sort"/>
 			<thead>
 				<tr>
 					<xsl:for-each select="$headers">
-						<xsl:variable name="h" select="."/>
+						<xsl:variable name="p" ><xsl:value-of select="$collectionPath"/>/<xsl:if test="count(.|../@*)=count(../@*)">@</xsl:if><xsl:value-of select="local-name()"/></xsl:variable>
 
-						<th>
-							<xsl:attribute name="title" >
-								<xsl:value-of select="$collectionPath"/>/<xsl:if test="count(.|../@*)=count(../@*)">@</xsl:if><xsl:value-of select="local-name()"/>
-							</xsl:attribute>
-							<a href="#"><span> </span><sub> </sub></a>
-							<xsl:value-of select="local-name()"/>
+						<th><a	href="#" 
+								onclick="sortTH(this);return false;" 
+								title="{$p}" 
+								xv:sortPath="{$p}"
+							   ><span> </span><sub> </sub>
+								<xsl:value-of select="local-name()"/>
+							</a>
 						</th>
 					</xsl:for-each>
 				</tr>
