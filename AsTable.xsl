@@ -82,7 +82,7 @@ xmlns:xv="http://xmlaspect.org/XmlView"
 	</xsl:apply-templates>
 </xsl:template>
 	
-<xsl:template mode="SortData" match="*[*]">
+<xsl:template mode="SortData" match="*[*]" name="SortDataDefault">
 	<xsl:param name="sortNode"/>
 	<xsl:copy>
 		<xsl:copy-of select="@*"/>		
