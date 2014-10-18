@@ -101,6 +101,9 @@ xmlns:xv="http://xmlaspect.org/XmlView"
 		<xsl:copy-of select="@*"/>		
 	</xsl:copy>
 </xsl:template>
+
+<!-- skip XmlView injected data from sorting results -->	
+<xsl:template mode="SortData" match="*[@XmlViewRuleId]"></xsl:template>
 	
 <!--
 <xsl:include href="sortParameters.xsl"/>	
@@ -142,12 +145,21 @@ xmlns:xv="http://xmlaspect.org/XmlView"
 					<xsl:for-each select="$headers">
 						<xsl:variable name="p" ><xsl:if test="count(.|../@*)=count(../@*)">@</xsl:if><xsl:value-of select="local-name()"/></xsl:variable>
 						<xsl:variable name="fullPath" ><xsl:value-of select="$collectionPath"/>/<xsl:value-of select="$p"/></xsl:variable>
-
+						<xsl:variable name ="direction" select="count(//xsl:sort)"/>
+						<xsl:variable name ="order"		>
+							<xsl:for-each select="//xsl:sort">
+								<xsl:if test="@select=$p">
+									<xsl:value-of select="count(preceding-sibling::xsl:sort) "/>
+								</xsl:if>
+							</xsl:for-each>
+						</xsl:variable>
+						
 						<th><a	href="#" 
 								onclick="sortTH(this);return false;" 
 								title="{$p}" 
 								xv:sortPath="{$p}"
-							   ><span> </span><sub> </sub>
+							   ><span><xsl:value-of select="$direction"/> </span>
+								<sub><xsl:value-of select="$order"/> </sub>
 								<xsl:value-of select="local-name()"/>
 							</a>
 						</th>
