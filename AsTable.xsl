@@ -55,7 +55,7 @@ xmlns:xv="http://xmlaspect.org/XmlView"
 					td{font-size:small;border-bottom: none;border-top: none;}
 					th a{ color: #FFFF80; text-decoration:none;}
 				</style>
-				<script type="text/javascript" src="XmlView.js"></script>
+				<script type="text/javascript" src="XmlView.js">/**/</script>
 			</head>
 			<body>
 				<xsl:variable name="sortedData">
@@ -82,6 +82,8 @@ xmlns:xv="http://xmlaspect.org/XmlView"
 	</xsl:apply-templates>
 </xsl:template>
 	
+	
+	
 <xsl:template mode="SortData" match="*[*]" name="SortDataDefault">
 	<xsl:param name="sortNode"/>
 	<xsl:copy>
@@ -92,9 +94,12 @@ xmlns:xv="http://xmlaspect.org/XmlView"
 		</xsl:apply-templates>
 	</xsl:copy>
 </xsl:template>
-<xsl:template mode="SortData" match="*">
+	
+<xsl:template mode="SortData" match="*[not(*)]">
 	<xsl:param name="sortNode"/>
-	<xsl:copy-of select="."/>
+	<xsl:copy>
+		<xsl:copy-of select="@*"/>		
+	</xsl:copy>
 </xsl:template>
 	
 <!--
@@ -121,6 +126,7 @@ xmlns:xv="http://xmlaspect.org/XmlView"
 	<xsl:template match="*" mode="DisplayAsTable" >
 		<xsl:param name="childName" select="name(*[1])"/>
 		<xsl:variable name="headers" select="*[1]/@*|*[1]/*" />		<!-- first child attributes and its children -->
+																	<!-- TODO union of unique child names as not all rows have same children set. When sorting the missing attributes changing number of columns -->
 		<xsl:variable name="collection"  select="."/>
 		<xsl:variable name="collectionPath"><xsl:apply-templates mode="xpath" select="."></xsl:apply-templates></xsl:variable>
 		
@@ -134,7 +140,8 @@ xmlns:xv="http://xmlaspect.org/XmlView"
 			<thead>
 				<tr>
 					<xsl:for-each select="$headers">
-						<xsl:variable name="p" ><xsl:value-of select="$collectionPath"/>/<xsl:if test="count(.|../@*)=count(../@*)">@</xsl:if><xsl:value-of select="local-name()"/></xsl:variable>
+						<xsl:variable name="p" ><xsl:if test="count(.|../@*)=count(../@*)">@</xsl:if><xsl:value-of select="local-name()"/></xsl:variable>
+						<xsl:variable name="fullPath" ><xsl:value-of select="$collectionPath"/>/<xsl:value-of select="$p"/></xsl:variable>
 
 						<th><a	href="#" 
 								onclick="sortTH(this);return false;" 
@@ -206,5 +213,18 @@ xmlns:xv="http://xmlaspect.org/XmlView"
 		<!-- Output the attribute's value as a predicate -->
 		<xsl:text/>[.="<xsl:value-of select="."/>"]<xsl:text/>
 	</xsl:template>
+	
+<xsl:template mode="ZZSortData" match="*[*[@region] ]" priority="2">
+	<!-- this is how sort will be adjusted by JS but with priority=3 -->
+	<xsl:param name="sortNode"/>
+	<xsl:copy>
+		<xsl:copy-of select="@*"/>		
+		<xsl:apply-templates mode="SortData" select="*">
+			<xsl:sort data-type="text" order="ascending" select="@stub-will-be-replaced"/>
+			<xsl:sort data-type="text" order="descending" select="@region"/>
+			<xsl:with-param name="sortNode" select="$sortNode" />
+		</xsl:apply-templates>
+	</xsl:copy>
+</xsl:template>
 	
 </xsl:stylesheet>
