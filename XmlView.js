@@ -12,7 +12,6 @@
 	,	DES = "descending"
     ,	xslName = "AsTable.xsl"
 	,	NS = "http://xmlaspect.org/XmlView"
-	,	sortTemplatePriority = 3
     ,	baseUrl = "./"
     ,	xslUrl = baseUrl + xslName
 	,	xmlUrl = document.location.href
@@ -117,14 +116,15 @@ unique( arr )
 	function 
 Transform( xml, xsl )
 {
-console.log("Transform "+ sortTemplatePriority );
+console.log( "Transform" );
 	UpdateSortRules( xml, xsl );
 	if ('undefined' == typeof XSLTProcessor)
 		return msg.innerHTML = xml.transformNode(xsl);
 	var p = new XSLTProcessor();
 	p.importStylesheet(xsl);
 	var r = p.transformToFragment(xml, document);
-	b.replaceChild(r, b.firstChild);
+	cleanElement(b);
+	b.appendChild(r);
 }
 	function 
 UpdateSortRules( xml, xsl )
@@ -136,15 +136,20 @@ UpdateSortRules( xml, xsl )
 	,	sortNode = XPath_node("//xsl:sort", template)
 	,	prevSort = XPath_node("//xsl:template[@priority='100']", xsl);
 
-	if( prevSort )
-		prevSort.parentNode.removeChild( prevSort );
-	if( ! sortRulesArr.length )
-		return;
 	console.log( "UpdateSortRules",collectionId, ids);
 
-//	template.setAttribute('SortDataCustom', 1);
+	// 2. remove previous injection
+	for( var n = sNode(); n; n = sNode() ) 
+		n.parentNode.removeChild(n);
+	if( prevSort )
+		prevSort.parentNode.removeChild( prevSort );
+
+	if( ! sortRulesArr.length )
+		return;
+
+	// 3. inject sorting template into XML
 	template.setAttribute('match', collectionId);
-	template.setAttribute( "priority", "100" ); //+sortTemplatePriority++ );
+	template.setAttribute( "priority", "100" );
 	template.removeAttribute('name');
 	ids.forEach( function( id, i )
 	{	var n = sortNode.cloneNode(true)
@@ -158,11 +163,6 @@ UpdateSortRules( xml, xsl )
 	xsl.documentElement.appendChild(template);
 console.log( template.outerHTML );
 
-	// 2. remove previous injection
-	for( var n = sNode(); n; n = sNode() ) 
-		n.parentNode.removeChild(n);
-
-	// 3. inject sorting template into XML
 	var sortTemplate = xml.importNode(template,true);
 	xml.documentElement.appendChild(sortTemplate);
 
