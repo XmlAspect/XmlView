@@ -96,9 +96,7 @@ xmlns:xv="http://xmlaspect.org/XmlView"
 </xsl:template>
 	
 <xsl:template mode="SortData" match="*[not(*)]">
-	<xsl:copy>
-		<xsl:copy-of select="@*"/>		
-	</xsl:copy>
+	<xsl:copy><xsl:copy-of select="@*"/><xsl:value-of select="."/></xsl:copy>
 </xsl:template>
 
 <!-- skip XmlView injected data from sorting results -->	
