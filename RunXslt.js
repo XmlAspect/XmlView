@@ -3,6 +3,7 @@
     ,   xslName = "AsTable.xsl"
     ,   baseUrl = "http://xmlaspect.org/XmlView/"
     ,   xslUrl  = baseUrl+xslName
+    ,   jsUrl  = baseUrl+"XmlView.js"
     ,   b       = document.body || document.documentElement
     ,   msg     = createElement("div");
     forEach(document.getElementsByTagName('script'), function(el)
@@ -30,6 +31,11 @@
             p.importStylesheet(xsl);
             r = p.transformToFragment( xml, document );
             b.replaceChild( r, b.firstChild );
+			var d = document
+            ,	h = d.getElementsByTagName('head')[0] || d.getElementsByTagName('div')[0] || document.documentElement
+            ,	s = d.createElementNS ? d.createElementNS(h.namespaceURI || 'http://www.w3.org/1999/xhtml', 'script') : d.createElement('script');
+            s.setAttribute('src', jsUrl);
+			h.appendChild(s);
         });
     });
     function forEach( arr, callback, pThis )

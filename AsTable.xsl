@@ -165,7 +165,7 @@ xmlns:xv="http://xmlaspect.org/XmlView"
 						<th><a	href="#" 
 								onclick="sortTH(this);return false;" 
 								title="{$p}" 
-								xv:sortPath="{$p}"
+								xv:sortpath="{$p}"
 							   ><span><xsl:value-of select="$direction"/> <sub><xsl:value-of select="$order"/> </sub></span>
 								
 								<xsl:value-of select="local-name()"/>
@@ -181,7 +181,7 @@ xmlns:xv="http://xmlaspect.org/XmlView"
 						<xsl:for-each select="$headers">
 							<xsl:variable name="key" select="name()" />
 							<td>
-								<xsl:attribute name="title"><xsl:apply-templates mode="xpath" select="."></xsl:apply-templates></xsl:attribute>
+								<!-- xsl:attribute name="title"><xsl:apply-templates mode="xpath" select="."></xsl:apply-templates></xsl:attribute -->
 								<xsl:value-of select="$rowNode/@*[local-name()=$key] | $rowNode/*[local-name()=$key]"/>
 							</td>
 						</xsl:for-each>

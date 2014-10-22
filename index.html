@@ -6,7 +6,7 @@
         iframe{float:right; width:30%; height:10em;}
         fieldset {display: inline-block;vertical-align: top;border-radius: 1em;border-bottom: none;border-left: none;}
         input,iframe{width:100%;}
-        .BookmarkletTag{ font-size:large; }
+        #BookmarkletTag{ font-size:large; border: 1px solid blue; border-radius: 4px; margin:4px;padding 4px;}
     </style>
     <script type="text/javascript">
         function BookmarkletBody(d,s,h)
@@ -57,9 +57,11 @@
             <legend>Bookmarklets</legend>
             1. Sample XML URL:
             <input type="text" placeholder="XML url" title="XML Url" value="countries.xml" id="XmlUrl"/>
-       1. drag this link onto toolbar><a id="BookmarkletTag" href="#">XmlView</a><br />
-            2. open <a href="countries.xml">countries.xml</a> or your XML in browser<br />
-            3. Click on bookmarklet to run <a href="RunXslt.js">RunXslt.js</a> which should re-render XML as table
+			<ol>
+				<li>drag this link onto toolbar : <a id="BookmarkletTag" href="#">XmlView</a></li>
+				<li>open <a href="countries.xml">countries.xml</a> or your XML in browser</li>
+				<li>Click on bookmarklet to run <a href="RunXslt.js">RunXslt.js</a> which should re-render XML as table</li>
+			</ol>
         </fieldset>
         <fieldset>
             <legend>XSLT</legend>

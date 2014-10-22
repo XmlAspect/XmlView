@@ -27,7 +27,7 @@
 	getXml( xmlUrl, function (xml)
 	{	getXml( xslUrl, function (xsl, p, r)
 		{	sortTH = function sortTH(th)
-			{	var sp = th.getAttribute("xv:sortPath")
+			{	var sp = th.getAttribute("xv:sortpath")
 				,	xp = sp.split('/')
 				, id = xp.pop()
 				, collectionId = xp.join('/')
