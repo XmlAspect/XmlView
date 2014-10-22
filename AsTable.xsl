@@ -34,6 +34,7 @@ xmlns:xv="http://xmlaspect.org/XmlView"
 	
 	
 	
+	<xsl:variable name="sorts"	select="//xsl:sort"	/>
 	
 <func:function name="my:count-elements">
       <func:result select="count(//*)" />
@@ -53,7 +54,8 @@ xmlns:xv="http://xmlaspect.org/XmlView"
 					tr:nth-child(even)	{background-image: linear-gradient(to bottom, rgba(9, 16, 11, 0.2) 0%, rgba(90, 164, 110, 0.1) 100%);}
 					tr:nth-child(odd)	{background: rgba(255,255,255,0.2);}
 					td{font-size:small;border-bottom: none;border-top: none;}
-					th a{ color: #FFFF80; text-decoration:none;}
+					th a{ color: #FFFF80; text-decoration:none; display:block;}
+					th a span{float:left;}
 				</style>
 				<script type="text/javascript" src="XmlView.js">/**/</script>
 			</head>
@@ -85,25 +87,23 @@ xmlns:xv="http://xmlaspect.org/XmlView"
 	
 	
 <xsl:template mode="SortData" match="*[*]" name="SortDataDefault">
-	<xsl:param name="sortNode"/>
 	<xsl:copy>
 		<xsl:copy-of select="@*"/>		
 		<xsl:apply-templates mode="SortData" select="*">
 			<xsl:sort data-type="text" order="ascending" select="@stub-will-be-replaced"/>
-			<xsl:with-param name="sortNode" select="$sortNode" />
 		</xsl:apply-templates>
 	</xsl:copy>
 </xsl:template>
 	
 <xsl:template mode="SortData" match="*[not(*)]">
-	<xsl:param name="sortNode"/>
 	<xsl:copy>
 		<xsl:copy-of select="@*"/>		
 	</xsl:copy>
 </xsl:template>
 
 <!-- skip XmlView injected data from sorting results -->	
-<xsl:template mode="SortData" match="*[@XmlViewRuleId]"></xsl:template>
+<xsl:template mode="SortData"		match="*[@priority='100']" priority="300"></xsl:template>
+<xsl:template mode="DisplayAsTable" match="*[@priority='100']" priority="300"></xsl:template>
 	
 <!--
 <xsl:include href="sortParameters.xsl"/>	
@@ -145,9 +145,19 @@ xmlns:xv="http://xmlaspect.org/XmlView"
 					<xsl:for-each select="$headers">
 						<xsl:variable name="p" ><xsl:if test="count(.|../@*)=count(../@*)">@</xsl:if><xsl:value-of select="local-name()"/></xsl:variable>
 						<xsl:variable name="fullPath" ><xsl:value-of select="$collectionPath"/>/<xsl:value-of select="$p"/></xsl:variable>
-						<xsl:variable name ="direction" select="count(//xsl:sort)"/>
+						<xsl:variable name ="direction"		>
+							<xsl:for-each select="$sorts">
+								<xsl:if test="@select=$p">
+									<xsl:choose>
+										<xsl:when test="@order='ascending'">&#9650;</xsl:when>
+										<xsl:when test="@order='descending'">&#9660;</xsl:when>
+										<xsl:otherwise>&#9674;</xsl:otherwise>
+									</xsl:choose>
+								</xsl:if>
+							</xsl:for-each>
+						</xsl:variable>
 						<xsl:variable name ="order"		>
-							<xsl:for-each select="//xsl:sort">
+							<xsl:for-each select="$sorts">
 								<xsl:if test="@select=$p">
 									<xsl:value-of select="count(preceding-sibling::xsl:sort) "/>
 								</xsl:if>
@@ -158,8 +168,8 @@ xmlns:xv="http://xmlaspect.org/XmlView"
 								onclick="sortTH(this);return false;" 
 								title="{$p}" 
 								xv:sortPath="{$p}"
-							   ><span><xsl:value-of select="$direction"/> </span>
-								<sub><xsl:value-of select="$order"/> </sub>
+							   ><span><xsl:value-of select="$direction"/> <sub><xsl:value-of select="$order"/> </sub></span>
+								
 								<xsl:value-of select="local-name()"/>
 							</a>
 						</th>
@@ -225,18 +235,5 @@ xmlns:xv="http://xmlaspect.org/XmlView"
 		<!-- Output the attribute's value as a predicate -->
 		<xsl:text/>[.="<xsl:value-of select="."/>"]<xsl:text/>
 	</xsl:template>
-	
-<xsl:template mode="ZZSortData" match="*[*[@region] ]" priority="2">
-	<!-- this is how sort will be adjusted by JS but with priority=3 -->
-	<xsl:param name="sortNode"/>
-	<xsl:copy>
-		<xsl:copy-of select="@*"/>		
-		<xsl:apply-templates mode="SortData" select="*">
-			<xsl:sort data-type="text" order="ascending" select="@stub-will-be-replaced"/>
-			<xsl:sort data-type="text" order="descending" select="@region"/>
-			<xsl:with-param name="sortNode" select="$sortNode" />
-		</xsl:apply-templates>
-	</xsl:copy>
-</xsl:template>
 	
 </xsl:stylesheet>

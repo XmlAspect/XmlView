@@ -80,16 +80,20 @@ triggerSortOrder( id, ord )
 		{ 
 			return el.key == id && ((i=n),true); 
 		} );
-	if( i < 0 )
-		i = arr.push({ key:id, ord: ord })-1;
-	arr[i].ord = ord || states[arr[i].ord];
+	var el	= ( i < 0 )
+			? { key:id, ord: ord }
+			: arr.splice(i,1)[0];
+	el.ord = ord || states[el.ord];
+	if( el.ord )
+		arr.unshift(el);
 }	
 	function 
 p2o( urlParams )
 {	var o = {};
 	urlParams && urlParams.split('&').forEach(function (kv)
 	{	var a = kv.split('=');
-		o[ a[0] ] = decodeURIComponent( a[1] ).split(',');
+		if( a.length > 1 && a[1] )
+			o[ a[0] ] = /*decodeURIComponent*/( a[1] ).split(',');
 	});
 	return o;
 }
@@ -97,7 +101,7 @@ p2o( urlParams )
 o2p( o )
 {	var p = [];
 	for( var k in o )
-		p.push( k+'='+ encodeURIComponent( o[k].join(',') ) );
+		p.push( k+'='+ /*encodeURIComponent*/( o[k].join(',') ) );
 	return p.join('&');
 }
 	function 
@@ -128,34 +132,41 @@ UpdateSortRules( xml, xsl )
 	// 1. create sorting template out of SortDataDefault
 	var	ids = sortRulesArr.map(function(el){ return el.key; })
 	,	collectionId = "*[* [" +ids.join(" or ") + "] ]"
-	, template = XPath_node("//xsl:template[@name='SortDataDefault']", xsl).cloneNode(true)
-	, sortNode = XPath_node("//xsl:sort", template);
+	,	template = XPath_node("//xsl:template[@name='SortDataDefault']", xsl).cloneNode(true)
+	,	sortNode = XPath_node("//xsl:sort", template)
+	,	prevSort = XPath_node("//xsl:template[@priority='100']", xsl);
 
-console.log( "UpdateSortRules",collectionId, ids);
+	if( prevSort )
+		prevSort.parentNode.removeChild( prevSort );
+	if( ! sortRulesArr.length )
+		return;
+	console.log( "UpdateSortRules",collectionId, ids);
 
+//	template.setAttribute('SortDataCustom', 1);
 	template.setAttribute('match', collectionId);
-	template.setAttribute( "priority", ""+sortTemplatePriority++ );
+	template.setAttribute( "priority", "100" ); //+sortTemplatePriority++ );
 	template.removeAttribute('name');
 	ids.forEach( function( id, i )
 	{	var n = sortNode.cloneNode(true)
 		,	ord = sortRulesArr[i].ord ;
 		n.setAttribute('select', id);
-		n.setAttribute('id', i+1);
+		// n.setAttribute('id', i+1);
 		ord &&	n.setAttribute('order', ord );		
 		sortNode.parentNode.appendChild( n );
 	});
 
 	xsl.documentElement.appendChild(template);
+console.log( template.outerHTML );
 
-	// 2. inject sorting template into XML
-	var sortTemplate = template.cloneNode(true);
-	sortTemplate.setAttribute('XmlViewRuleId',''+sortTemplatePriority);
-	for( var n = sNode(); n; n = sNode() ) // remove previous injection
+	// 2. remove previous injection
+	for( var n = sNode(); n; n = sNode() ) 
 		n.parentNode.removeChild(n);
 
+	// 3. inject sorting template into XML
+	var sortTemplate = xml.importNode(template,true);
 	xml.documentElement.appendChild(sortTemplate);
-console.log( template.outerHTML );
-	function sNode(){ return XPath_node("//*[@XmlViewRuleId]", xml); }
+
+	function sNode(){ return XPath_node("//*[@priority='100']", xml); }
 }
 	function 
 XPath_node(xPath, node)
