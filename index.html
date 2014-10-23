@@ -14,7 +14,7 @@
             d = document;
             h = d.getElementsByTagName('head')[0] || d.getElementsByTagName('div')[0] || document.documentElement;
             s = d.createElementNS ? d.createElementNS(h.namespaceURI || 'http://www.w3.org/1999/xhtml', 'script') : d.createElement('script');
-            s.setAttribute('src', 'RunXslt.js');
+            s.setAttribute('src', 'http://xmlaspect.org/XmlView/RunXslt.js');
 
             h.appendChild(s);           
         }
@@ -97,5 +97,6 @@
     <iframe id="demoFrame" >xml will be shown here
         TODO: use OBJECT instead of IFRAME: http://stackoverflow.com/questions/7315218/chrome-and-firefox-are-not-displaying-most-pdf-documents-in-an-iframe
     </iframe>
-</body>
+	<hr />
+	<pre style="text-align: right">©2014 Simulation Works, LLC | licensed under <a href="LICENSE">Apache 2.0</a></pre></body>
 </html>
