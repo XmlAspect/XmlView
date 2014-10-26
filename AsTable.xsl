@@ -60,11 +60,21 @@ xmlns:xv="http://xmlaspect.org/XmlView"
 					/* collapse and select UI */
 					fieldset legend label{ cursor:pointer;}
 					input[type='checkbox']{ display:none;}
+					
 					input[type='checkbox']:checked+fieldset{ border:2px solid red; }
 					input[type='checkbox']:checked+input+fieldset div,
-					input[type='checkbox']:checked+input+fieldset legend label i,
-					fieldset legend label b{display:none; }
-					input[type='checkbox']:checked+input+fieldset legend label b{ display:inline;}
+					input[type='checkbox']:checked+input+fieldset legend label.collapse i,
+					input[type='checkbox']:checked+fieldset .select i,
+					input[type='checkbox']+fieldset .collapse b,
+					input[type='checkbox']+fieldset .select b
+					{display:none; }
+					
+					input[type='checkbox']:checked+input+fieldset .collapse b,
+					input[type='checkbox']+input:checked+fieldset .select b
+					{ display:inline;}
+					
+					legend label{ text-shadow: -1px -1px 1px #fff, -1px 0px 1px #fff, 0px -1px 1px #fff, 1px 1px 1px #999, 0px 1px 1px #999, 1px 0px 1px #999, 1px 1px 5px #113;}
+					legend label b, legend label i{ margin-right: 0.5em; } 
 				</style>
 				<script type="text/javascript" src="XmlView.js">/**/</script>
 			</head>
@@ -142,7 +152,7 @@ xmlns:xv="http://xmlaspect.org/XmlView"
 		<input type="checkbox" id="collapse{$xPath}" class="collapseControl"/>
 		<input type="checkbox" id="select{$xPath}"/>
 		<fieldset>
-			<legend><label for="collapse{$xPath}" class="collapse"><b>&#9654;</b><i>&#9660;</i></label> <label for="select{$xPath}" class="select"><b>&#x274f;</b><i>&#10003;</i></label> <xsl:value-of select="name()"/></legend>
+			<legend><label for="collapse{$xPath}" class="collapse"><b>&#9654;</b><i>&#9660;</i></label> <label for="select{$xPath}" class="select"><b>&#10004;</b><i>&#10003;</i></label> <xsl:value-of select="name()"/></legend>
 			<div>
 				<xsl:apply-templates select="." mode="DisplayContent"/>
 			</div>
