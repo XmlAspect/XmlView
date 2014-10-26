@@ -11,8 +11,9 @@
         ,   i   = url.indexOf('RunXslt.js');
         if( i>0 )
         {
-            baseUrl = url.substring(0,i);
-            xslUrl = baseUrl+"AsTable.xsl";
+			baseUrl = url.substring(0,i);
+			xslUrl = baseUrl+"AsTable.xsl";
+			jsUrl  = baseUrl+"XmlView.js"
         }
     });
     

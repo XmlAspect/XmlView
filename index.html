@@ -14,8 +14,10 @@
             d = document;
             h = d.getElementsByTagName('head')[0] || d.getElementsByTagName('div')[0] || document.documentElement;
             s = d.createElementNS ? d.createElementNS(h.namespaceURI || 'http://www.w3.org/1999/xhtml', 'script') : d.createElement('script');
-            s.setAttribute('src', 'http://xmlaspect.org/XmlView/RunXslt.js');
-
+            s.setAttribute('src', (   document.location.hostname == 'localhost'
+									? document.location.pathname.substring( 0,document.location.pathname.lastIndexOf('/'))+'/RunXslt.js'
+									:'http://xmlaspect.org/XmlView/RunXslt.js'));
+			debugger;
             h.appendChild(s);           
         }
         function InitBookmarks()

@@ -1,4 +1,6 @@
-﻿(function ()
+﻿function sortTH(){}
+
+(function ()
 {
 	/*	
 		1. Extract sorting rules from URL
@@ -24,28 +26,38 @@
 	
 	console.log( sortRulesArr );
 
-	getXml( xmlUrl, function (xml)
-	{	getXml( xslUrl, function (xsl, p, r)
-		{	sortTH = function sortTH(th)
-			{	var sp = th.getAttribute("xv:sortpath")
-				,	xp = sp.split('/')
-				, id = xp.pop()
-				, collectionId = xp.join('/')
-				, order = states[th.getAttribute('order')];
+	document.body
+		? OnLoad()
+		: document.addEventListener( "DOMContentLoaded", OnLoad, false );
 
-				triggerSortOrder(id);
-
-				Transform(xml, xsl);
-												
-				var params = p2o( document.location.hash.substring(1) );
-				params.sort = sortRules2arr();
-				window.location.href = '#' + o2p(params);
-			};
-			if( sortRulesArr.length )
-				Transform( xml, xsl );
-		});
-	});
 	return; // ============================
+
+	function OnLoad()
+	{
+		getXml( xmlUrl, function (xml)
+		{	console.log("loaded",xmlUrl);
+			getXml( xslUrl, function (xsl, p, r)
+			{	console.log("loaded",xslUrl);
+				sortTH = function sortTH(th)
+				{	var sp = th.getAttribute("xv:sortpath")
+					,	xp = sp.split('/')
+					, id = xp.pop()
+					, collectionId = xp.join('/')
+					, order = states[th.getAttribute('order')];
+
+					triggerSortOrder(id);
+
+					Transform(xml, xsl);
+												
+					var params = p2o( document.location.hash.substring(1) );
+					params.sort = sortRules2arr();
+					window.location.href = '#' + o2p(params);
+				};
+				if( sortRulesArr.length )
+					Transform( xml, xsl );
+			});
+		});
+	}
 
 	function
 sortRules2arr()
@@ -122,7 +134,8 @@ console.log( "Transform" );
 		return msg.innerHTML = xml.transformNode(xsl);
 	var p = new XSLTProcessor();
 	p.importStylesheet(xsl);
-	var r = p.transformToFragment(xml, document);
+	var r = p.transformToFragment(xml, document)
+	,	b = document.body || document.documentElement;
 	cleanElement(b);
 	b.appendChild(r);
 }

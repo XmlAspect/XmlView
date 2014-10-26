@@ -57,6 +57,8 @@ xmlns:xv="http://xmlaspect.org/XmlView"
 					th a{ color: #FFFF80; text-decoration:none; display:block;}
 					th a span{float:left;}
 					
+					fieldset{border-radius: 1em;border-bottom: none;border-left: none;}
+					
 					/* collapse and select UI */
 					fieldset legend label{ cursor:pointer;}
 					input[type='checkbox']{ display:none;}
