@@ -12,7 +12,7 @@
 	,	DES = "descending"
     ,	xslName = "AsTable.xsl"
 	,	NS = "http://xmlaspect.org/XmlView"
-    ,	baseUrl = NS + '/'
+    ,	baseUrl = ((document.location.hostname == 'localhost' ) ? document.location.pathname.substring( 0,document.location.pathname.lastIndexOf('/')) : NS ) + '/'
     ,	xslUrl = baseUrl + xslName
 	,	xmlUrl = document.location.href
     ,	b = document.body || document.documentElement

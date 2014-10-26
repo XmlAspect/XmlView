@@ -56,6 +56,15 @@ xmlns:xv="http://xmlaspect.org/XmlView"
 					td{font-size:small;border-bottom: none;border-top: none;}
 					th a{ color: #FFFF80; text-decoration:none; display:block;}
 					th a span{float:left;}
+					
+					/* collapse and select UI */
+					fieldset legend label{ cursor:pointer;}
+					input[type='checkbox']{ display:none;}
+					input[type='checkbox']:checked+fieldset{ border:2px solid red; }
+					input[type='checkbox']:checked+input+fieldset div,
+					input[type='checkbox']:checked+input+fieldset legend label i,
+					fieldset legend label b{display:none; }
+					input[type='checkbox']:checked+input+fieldset legend label b{ display:inline;}
 				</style>
 				<script type="text/javascript" src="XmlView.js">/**/</script>
 			</head>
@@ -66,7 +75,7 @@ xmlns:xv="http://xmlaspect.org/XmlView"
 						<xsl:with-param name="sortNode" select="document('sortParameters.xml')/*" />
 					</xsl:call-template>
 				</xsl:variable>
-				<xsl:apply-templates select="exslt:node-set($sortedData)" mode="DisplayAsTable" />
+				<xsl:apply-templates select="exslt:node-set($sortedData)" mode="DisplayAs"/>
 			</body>
 			<head>
 				<script>
@@ -106,35 +115,63 @@ xmlns:xv="http://xmlaspect.org/XmlView"
 <!--
 <xsl:include href="sortParameters.xsl"/>	
 -->		
-	<xsl:template match="*">
-		<xsl:variable name="firstChildName" select="name(./*[1])"/>
+
+	<xsl:template mode="DisplayAs"	match="*" ><!-- distinct tags, match to 1st  -->
+		<xsl:variable name="tagName" select="name()" />
 		<xsl:choose>
-			<xsl:when test="count( *[ name() = $firstChildName ] ) &gt; 1">
-				<var><xsl:value-of select="name()"/></var>
-				<xsl:apply-templates mode="DisplayAsTable" select="."/>
+			<xsl:when test="count( ../*[name()=$tagName]) != 1">
+				<xsl:apply-templates select="." mode="DisplayAsTable" />
 			</xsl:when>
 			<xsl:otherwise>
-				<xsl:apply-templates mode="DisplayAsTree"/>
+				<xsl:apply-templates select="." mode="DisplayAsTree" />
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
+	<xsl:template mode="DisplayAs"	match="@*" >
+		<b><xsl:value-of select="name()"/></b>=<var><xsl:value-of select="."/></var>
+	</xsl:template>
+	<xsl:template mode="DisplayAsTree" match="*[not(*)]" priority="20">
+		<div><label><xsl:value-of select="name()"/></label>
+			<xsl:apply-templates select="@*" mode="DisplayAs"/>
+			<var><xsl:value-of select="."/></var>
+		</div>
+	</xsl:template>
+	
+	<xsl:template mode="DisplayAsTree" match="*" >
+		<xsl:variable name="xPath"><xsl:apply-templates mode="xpath" select="."/></xsl:variable>
+		<input type="checkbox" id="collapse{$xPath}" class="collapseControl"/>
+		<input type="checkbox" id="select{$xPath}"/>
+		<fieldset>
+			<legend><label for="collapse{$xPath}" class="collapse"><b>&#9654;</b><i>&#9660;</i></label> <label for="select{$xPath}" class="select"><b>&#x274f;</b><i>&#10003;</i></label> <xsl:value-of select="name()"/></legend>
+			<div>
+				<xsl:apply-templates select="." mode="DisplayContent"/>
+			</div>
+		</fieldset>		
+	</xsl:template>
+	<xsl:template mode="DisplayContent" match="*">
+		<xsl:for-each select="@*|*">
+			<xsl:variable name="tagName" select="name()"/>
 
-	<xsl:template match="*" mode="DisplayAsTree">
-		<xsl:value-of select="name()"/>
-		<xsl:apply-templates select="*"></xsl:apply-templates>
+			<xsl:if test="not(preceding-sibling::*[name()=$tagName])">
+				<xsl:apply-templates select="." mode="DisplayAs"/>
+			</xsl:if>
+		</xsl:for-each>
+		<xsl:if test="normalize-space(text()) != '' ">
+			<p><xsl:value-of select="text()"/></p>	
+		</xsl:if>
 	</xsl:template>
 
 	<xsl:template match="*" mode="DisplayAsTable" >
-		<xsl:param name="childName" select="name(*[1])"/>
-		<xsl:variable name="headers" select="*[1]/@*|*[1]/*" />		<!-- first child attributes and its children -->
-																	<!-- TODO union of unique child names as not all rows have same children set. When sorting the missing attributes changing number of columns -->
-		<xsl:variable name="collection"  select="."/>
-		<xsl:variable name="collectionPath"><xsl:apply-templates mode="xpath" select="."></xsl:apply-templates></xsl:variable>
+		<xsl:param name="childName" select="name()"/>
+		<xsl:variable name="headers" select="@*|*" />		<!-- first child attributes and its children -->
+															<!-- TODO union of unique child names as not all rows have same children set. When sorting the missing attributes changing number of columns -->
+		<xsl:variable name="collection"  select=".."/>
+		<xsl:variable name="collectionPath"><xsl:apply-templates mode="xpath" select=".."></xsl:apply-templates></xsl:variable>
 		
 		<table border="1">
 			<caption><!-- todo collapsible -->
 				<var>
-					<xsl:attribute name="title"><xsl:value-of select="$collectionPath"/></xsl:attribute>
+					<xsl:attribute name="title"><xsl:value-of select="$collectionPath"/>/<xsl:value-of select="$childName"/></xsl:attribute>
 					<xsl:value-of select="$childName"/>
 				</var>
 			</caption>
@@ -175,14 +212,14 @@ xmlns:xv="http://xmlaspect.org/XmlView"
 				</tr>
 			</thead>
 			<tbody>
-				<xsl:for-each select="*">
+				<xsl:for-each select="../*[name()=$childName]">
 					<xsl:variable name="rowNode" select="." />
 					<tr>
 						<xsl:for-each select="$headers">
 							<xsl:variable name="key" select="name()" />
 							<td>
 								<!-- xsl:attribute name="title"><xsl:apply-templates mode="xpath" select="."></xsl:apply-templates></xsl:attribute -->
-								<xsl:value-of select="$rowNode/@*[local-name()=$key] | $rowNode/*[local-name()=$key]"/>
+								<xsl:apply-templates mode="DisplayContent" select="$rowNode/*[name()=$key]|$rowNode/@*[name()=$key]" />
 							</td>
 						</xsl:for-each>
 					</tr>
@@ -190,7 +227,7 @@ xmlns:xv="http://xmlaspect.org/XmlView"
 			</tbody>
 		</table>
 	</xsl:template>
-	
+		
 	<!-- XmlAspect/XOR/XPath/Dom2XPath.xsl -->
 	<!-- Root -->
 	<xsl:template match="/" mode="xpath">
