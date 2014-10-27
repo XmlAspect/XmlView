@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<xv:sort xmlns:xv="http://xmlaspect.org/XmlView" xmlns="http://xmlaspect.org/XmlView">
-	<sort order="acsending" select="@continent">
-		<sort order="descending" select="@population"/>		
-	</sort>
-</xv:sort>
