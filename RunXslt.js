@@ -25,7 +25,8 @@
     {   getXml( xslUrl, function ( xsl, p, r )
         {
             if ('undefined' == typeof XSLTProcessor)
-            {   msg.innerHTML = xml.transformNode(xsl);
+            {	xsl.setProperty("AllowXsltScript", true);
+				msg.innerHTML = xml.transformNode(xsl);
                 return;
             }
             p = new XSLTProcessor();

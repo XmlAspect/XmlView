@@ -132,7 +132,12 @@ Transform( xml, xsl )
 console.log( "Transform" );
 	UpdateSortRules( xml, xsl );
 	if ('undefined' == typeof XSLTProcessor)
-		return msg.innerHTML = xml.transformNode(xsl);
+	{	xsl.setProperty("AllowXsltScript", true);
+		var r = xml.transformNode(xsl)
+		,	b = document.body || document.documentElement;	
+		b.innerHTML = r;
+		return;
+	}
 	var p = new XSLTProcessor();
 	p.importStylesheet(xsl);
 	var r = p.transformToFragment(xml, document)
@@ -182,25 +187,32 @@ console.log( template.outerHTML );
 
 	function sNode(){ return XPath_node("//*[@priority='100']", xml); }
 }
+
 	function 
 XPath_node(xPath, node)
 {
-	if ("SelectSingleNode" in node)
-	{
-		return node.selectSingleNode(xPath /* , XmlNamespaceManager nsmgr */)
-	}
 	var d = node.ownerDocument || node
-, nsResolver = d.createNSResolver && d.createNSResolver(d.documentElement);
-	return (node.ownerDocument || node)
-	.evaluate(xPath, node, nsResolver, XPathResult.FIRST_ORDERED_NODE_TYPE, null)
-	.singleNodeValue;
+	,	nsResolver = d.createNSResolver && d.createNSResolver(d.documentElement);
+	if( d.evaluate )
+		return (node.ownerDocument || node)
+			.evaluate(xPath, node, nsResolver, 9, null)
+			.singleNodeValue;
+	d.setProperty('SelectionLanguage', 'XPath');
+	d.setProperty('SelectionNamespaces', 'xmlns:xsl="http://www.w3.org/1999/XSL/Transform"');
+  
+	return node.selectSingleNode( xPath );//,nsmgr )
 }
 	function 
 XPath_nl(xPath, node)
 {
-	return ("SelectNodes" in node)
-		? node.SelectNodes(xPath /* , XmlNamespaceManager nsmgr */)
-		: (node.ownerDocument || node).evaluate(xPath, node, nsResolver, XPathResult.ANY_TYPE, null);
+	var d = node.ownerDocument || node
+	,	nsResolver = d.createNSResolver && d.createNSResolver(d.documentElement);
+	if( d.evaluate )
+		return (node.ownerDocument || node).evaluate( xPath, node, nsResolver, 0, null );
+
+	d.setProperty('SelectionLanguage', 'XPath');
+	d.setProperty('SelectionNamespaces', 'xmlns:xsl="http://www.w3.org/1999/XSL/Transform"');
+	return node.SelectNodes( xPath );//, nsmgr );
 }
         function
 Json2Xml( o, tag )
