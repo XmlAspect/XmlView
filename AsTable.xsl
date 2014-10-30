@@ -56,6 +56,7 @@ xmlns:xv="http://xmlaspect.org/XmlView"
 					td{font-size:small;border-bottom: none;border-top: none;}
 					th a{ color: #FFFF80; text-decoration:none; display:block;}
 					th a span{float:left;}
+					div>label{ margin-right:1em;}
 					
 					fieldset{border-radius: 1em;border-bottom: none;border-left: none;}
 					
@@ -84,7 +85,6 @@ xmlns:xv="http://xmlaspect.org/XmlView"
 				<xsl:variable name="sortedData">
 					<xsl:call-template name="StartSort">
 						<xsl:with-param name="data" select="*" />
-						<xsl:with-param name="sortNode" select="document('sortParameters.xml')/*" />
 					</xsl:call-template>
 				</xsl:variable>
 				<xsl:apply-templates select="exslt:node-set($sortedData)" mode="DisplayAs"/>
@@ -175,11 +175,22 @@ xmlns:xv="http://xmlaspect.org/XmlView"
 
 	<xsl:template match="*" mode="DisplayAsTable" >
 		<xsl:param name="childName" select="name()"/>
-		<xsl:variable name="headers" select="@*|*" />		<!-- first child attributes and its children -->
+		<xsl:variable name="ZZheaders" select="@*|*" />		<!-- first child attributes and its children -->
 															<!-- TODO union of unique child names as not all rows have same children set. When sorting the missing attributes changing number of columns -->
 		<xsl:variable name="collection"  select=".."/>
 		<xsl:variable name="collectionPath"><xsl:apply-templates mode="xpath" select=".."></xsl:apply-templates></xsl:variable>
 		
+<xsl:variable name="hAll">
+	<xsl:for-each select="*|@*">
+		<xsl:variable name="p"  select="name()"/>
+		<xsl:choose>
+			<xsl:when test="count(.|../@*)=count(../@*)"><xsl:element name="{$p}"><xsl:attribute name="xv" ><xsl:value-of select="$p" /></xsl:attribute></xsl:element></xsl:when>
+			<xsl:when test="count( preceding-sibling::*[name()=$p]) != 0"></xsl:when>
+			<xsl:otherwise><xsl:copy/></xsl:otherwise>
+		</xsl:choose>
+	</xsl:for-each>
+</xsl:variable>
+		<xsl:variable name="headers" select="exslt:node-set($hAll)/*" />
 		<table border="1">
 			<caption><!-- todo collapsible -->
 				<var>
@@ -190,7 +201,7 @@ xmlns:xv="http://xmlaspect.org/XmlView"
 			<thead>
 				<tr>
 					<xsl:for-each select="$headers">
-						<xsl:variable name="p" ><xsl:if test="count(.|../@*)=count(../@*)">@</xsl:if><xsl:value-of select="local-name()"/></xsl:variable>
+						<xsl:variable name="p" ><xsl:if test="name(.)=@xv">@</xsl:if><xsl:value-of select="local-name()"/></xsl:variable>
 						<xsl:variable name="fullPath" ><xsl:value-of select="$collectionPath"/>/<xsl:value-of select="$p"/></xsl:variable>
 						<xsl:variable name ="direction"		>
 							<xsl:for-each select="$sorts">
@@ -231,7 +242,16 @@ xmlns:xv="http://xmlaspect.org/XmlView"
 							<xsl:variable name="key" select="name()" />
 							<td>
 								<!-- xsl:attribute name="title"><xsl:apply-templates mode="xpath" select="."></xsl:apply-templates></xsl:attribute -->
-								<xsl:apply-templates mode="DisplayContent" select="$rowNode/*[name()=$key]|$rowNode/@*[name()=$key]" />
+								
+		<xsl:choose>
+			<xsl:when test="count( $rowNode/*[name()=$key]) &gt; 1">
+				<xsl:apply-templates select="$rowNode/*[name()=$key][1]" mode="DisplayAsTable" />
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:apply-templates mode="DisplayContent" select="$rowNode/*[name()=$key]|$rowNode/@*[name()=$key]" />
+			</xsl:otherwise>
+		</xsl:choose>
+
 							</td>
 						</xsl:for-each>
 					</tr>
