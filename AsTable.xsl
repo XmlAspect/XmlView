@@ -56,7 +56,7 @@ xmlns:xv="http://xmlaspect.org/XmlView"
 					td{font-size:small;border-bottom: none;border-top: none;}
 					th a{ color: #FFFF80; text-decoration:none; display:block;}
 					th a span{float:left;}
-					div>label{ margin-right:1em;}
+					div>label, div>var{ margin-right:0.5em;}
 					
 					fieldset{border-radius: 1em;border-bottom: none;border-left: none;}
 					

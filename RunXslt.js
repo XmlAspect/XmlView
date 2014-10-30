@@ -44,21 +44,53 @@
         for( var i=0; i<arr.length;i++)
            callback.call( pThis||arr, arr[i], i , pThis||arr );
     }
-    function getXml( url, callback )
-    {   var xhr = window.ActiveXObject ? new ActiveXObject("Msxml2.XMLHTTP") : new XMLHttpRequest();
- //       xhr.url = url;
-        xhr.open("GET", url, false);
-        try {xhr.responseType = "msxml-document"} catch(err) {} // Helping IE11
-        xhr.onreadystatechange = function()
-        {
-            if( 4 != xhr.readyState )
-                return;
-            if( xhr.responseXML )
-                return callback( xhr.responseXML );
-            return new DOMParser().parseFromString( xhr.responseText, "application/xml" );
-        }
-        xhr.send();
+        function
+Json2Xml( o, tag )
+{   var noTag = "string" != typeof tag;
+
+    if( o instanceof Array )
+    {   noTag &&  (tag = 'array');
+        return "<"+tag+">"+o.map(function(el){ return Json2Xml(el,tag); }).join()+"</"+tag+">";
     }
+    noTag &&  (tag = 'r');
+	tag=tag.replace( /[^a-z0-9]/gi,'_' );
+    var oo  = {}
+    ,   ret = [ "<"+tag+" "];
+    for( var k in o )
+        if( typeof o[k] == "object" )
+            oo[k] = o[k];
+        else
+            ret.push( k.replace( /[^a-z0-9]/gi,'_' ) + '="'+o[k].toString().replace(/&/gi,'&#38;')+'"');
+    if( oo )
+    {   ret.push(">");
+        for( var k in oo )
+            ret.push( Json2Xml( oo[k], k ) );
+        ret.push("</"+tag+">");
+    }else
+        ret.push("/>");
+    return ret.join('\n');
+}
+
+    function 
+getXml( url, callback )
+{
+	var xhr = window.ActiveXObject ? new ActiveXObject("Msxml2.XMLHTTP") : new XMLHttpRequest();
+//       xhr.url = url;
+    xhr.open("GET", url, false);
+    try {xhr.responseType = "msxml-document"} catch(err) {} // Helping IE11
+    xhr.onreadystatechange = function()
+    {
+        if( 4 != xhr.readyState )
+            return;
+        if( xhr.responseXML )
+            return callback( xhr.responseXML );
+        var txt = xhr.responseText.trim();
+        if( txt.charAt(0)!='<' )
+            txt = Json2Xml( JSON.parse(txt) );
+		return callback(new DOMParser().parseFromString( txt, "application/xml" ));
+    }
+    xhr.send();
+}
     function createElement(name)
     {
         return document.createElementNS ? document.createElementNS(XHTML, name) : document.createElement(name);
@@ -68,4 +100,5 @@
         while( el.lastChild )
             el.removeChild( el.lastChild );
     }
-})()
+
+})();

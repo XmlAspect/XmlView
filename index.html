@@ -48,17 +48,28 @@
     </script>
 </head>
 <body onload="OnLoad();">
-    <h1>XmlView - XmlAspect.org</h1>
+    <h1>XmlView - XmlAspect.org
+	</h1>
     <main>
         <fieldset>
             <legend>Intro</legend>
-            XmlView is a set of tools for XML presentation change in browser.<br />
+		<div style="width:16em; float:right;">
+					<script src="https://apis.google.com/js/platform.js" async="async" defer="defer"></script>
+					<div class="g-plusone" data-size="small" data-annotation="inline" data-width="120"></div>
+					
+					<a href="https://twitter.com/share" class="twitter-share-button" data-via="SashaFirsov" data-hashtags="XmlAspect">Tweet</a>
+					<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+		</div>
+            XmlView is a set of tools for XML/JSON presentation change in browser.<br />
 
-			Bookmarklet, browser plugin, XSLT rule will help to present XML in browser as a table, bar/pie chart.<br />
+			Bookmarklet, browser plugin, XSLT rule will help to present XML/JSON in browser as a table, bar/pie chart.<br />
 			UI could be adjusted with tables sorting and containers collapsing.<br />
 			Sort parameters are reflected in URL to be persisted there and shared.
 			<div>
+				<h3>open sample <a href="countries.xml">xml</a> | <a href="webapp.json">json</a> or <i>your</i> web service URL in browser </h3>
+				<img src="DefViewJson.png" /> 
 				<img src="DefView.png" /> 
+				<h3>after click on browser bookmarklet button the data will be shown as table</h3>
 				<img src="Bookmarklet.png" />
 				<img src="XmlView.png" /> 
 			</div>
@@ -66,15 +77,15 @@
         <fieldset>
             <legend>Bookmarklet</legend>
 			Bookmarklet is a button in a browser bookmarks toolbar. <br />
-			It will change opened in a browser XML presentation to collapsible and sortable tables.<br />
+			It will change opened in a browser XML/JSON presentation to collapsible and sortable tables.<br />
 			How it works? Rather holding a link it runs the script on current page applying the AsTable.xsl transformation. <br />
 			To use it:
             <ol>
 				<li>drag this link onto browser toolbar : <a id="BookmarkletTag" href="#">XmlView</a></li>
-				<li>open <a href="countries.xml">countries.xml</a> or your XML in browser</li>
+				<li>open <a href="countries.xml">xml</a> | <a href="webapp.json">json</a> or <b>your</b> XML/JSON in browser</li>
 				<li>Click on bookmarklet to run <a href="RunXslt.js">RunXslt.js</a> which should re-render XML as table</li>
-				<li>XML shall be accessible on web site <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS">to be read by XHR</a><br />
-					or include XSLT explicitly in XML.
+				<li>XML/JSON shall be accessible on web site <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS">to be read by XHR</a><br />
+					or included XSLT explicitly in XML.
 				</li>
 			</ol>
         </fieldset>
@@ -88,6 +99,7 @@
 			</ul>
 			Functional component
 			<ul>
+				<li>Loader reads XML or JSON string and converts to XML document</li>
 				<li>XSLT referenced from within XML renders UI by browser without JS. </li>
 				<li>Collapsing and selection controlled by pure CSS </li>
 				<li>Sorting is done by <a href="XmlView.js">XmlView.js</a>. <br />
@@ -98,21 +110,14 @@
         <fieldset>
             <legend>Links</legend>
             <ul>
-				<li>
-					<script src="https://apis.google.com/js/platform.js" async="async" defer="defer"></script>
-					<div class="g-plusone" data-size="small" data-annotation="inline" data-width="120"></div>
-					|
-					<a href="https://twitter.com/share" class="twitter-share-button" data-via="SashaFirsov" data-hashtags="XmlAspect">Tweet</a>
-					<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
-				</li>
                 <li><a href="https://github.com/XmlAspect/XmlView">Sources</a></li>
                 <li>Wish list, Live docs and discussion at <a href="http://apifusion.com/wiki/index.php?title=XmlAspect.org/XmlView">ApiFusion.org</a></li>
                 <li><a href="countries.xml">countries.xml</a> country list compiled from <a href="https://github.com/umpirsky/country-list/blob/master/country/cldr/en/country.xml">umpirsky/country-list</a>,
 					<br />
 					<a href="wikipediaSearch.xml">wikipediaSearch.xml</a> originated from <a href="http://api.geonames.org">api.geonames.org</a>
 				</li>
-                <li><hr /></li>
-                <li>TODO: CDN list</li>
+				<li><a href="webapp.xml">webapp.xml</a> and <a href="webapp.json">webapp.json</a> from <a href="http://json.org/example">json.org</a></li>                
+                <li><hr />TODO: CDN list</li>
             </ul>
         </fieldset>
         <fieldset>
