@@ -26,7 +26,7 @@
 	
 	console.log( sortRulesArr );
 
-	document.body
+	document.body || "complete" == document.readyState 
 		? OnLoad()
 		: document.addEventListener( "DOMContentLoaded", OnLoad, false );
 
@@ -47,8 +47,8 @@ OnLoad()
 					, order = states[th.getAttribute('order')];
 
 					triggerSortOrder(id);
-
-					Transform(xml, xsl);
+					
+					Transform(xml, xsl);					
 												
 					var params = p2o( document.location.hash.substring(1) );
 					params.sort = sortRules2arr();
@@ -129,8 +129,12 @@ unique( arr )
 	function 
 Transform( xml, xsl )
 {
-console.log( "Transform" );
+	console.log( "Transform" );
 	UpdateSortRules( xml, xsl );
+
+	if( document.querySelector('.XmlViewRendered') )
+		XPath_node("//xsl:template[@name='BodyOnly']", xsl ).setAttribute("priority","20");
+
 	if ('undefined' == typeof XSLTProcessor)
 	{	xsl.setProperty("AllowXsltScript", true);
 		var r = xml.transformNode(xsl)
@@ -140,8 +144,9 @@ console.log( "Transform" );
 	}
 	var p = new XSLTProcessor();
 	p.importStylesheet(xsl);
+
 	var r = p.transformToFragment(xml, document)
-	,	b = document.body || document.documentElement;
+	,	b = document.querySelector('.XmlViewRendered') || document.body || document.documentElement;
 	cleanElement(b);
 	b.appendChild(r);
 }
@@ -181,7 +186,6 @@ UpdateSortRules( xml, xsl )
 
 	xsl.documentElement.appendChild(template);
 console.log( template.outerHTML );
-
 	var sortTemplate = xml.importNode(template,true);
 	xml.documentElement.appendChild(sortTemplate);
 
@@ -243,20 +247,30 @@ Json2Xml( o, tag )
         function 
 getXml(url, callback)
 {
+	console.log(url);
 	var xhr = window.ActiveXObject ? new ActiveXObject("Msxml2.XMLHTTP") : new XMLHttpRequest();
 	//       xhr.url = url;
 	xhr.open("GET", url, false);
 	try { xhr.responseType = "msxml-document" } catch (err) { } // Helping IE11
 	xhr.onreadystatechange = function ()
 	{
-		if (4 != xhr.readyState)
+		if( 4 != xhr.readyState )
 			return;
-		if (xhr.responseXML)
+		try
+		{
+			if( xhr.responseXML )
 			return callback(xhr.responseXML);
-        var txt = xhr.responseText.trim();
-        if( txt.charAt(0)!='<' )
-            txt = Json2Xml( JSON.parse(txt) );
-		return callback(new DOMParser().parseFromString( txt, "application/xml" ));
+			var txt = xhr.responseText.trim();
+			if( txt.charAt(0)!='<' )
+			{
+				console.log("treating as JSON",txt.substring(0,50));
+				txt = Json2Xml( JSON.parse(txt) );
+			}
+			callback(new DOMParser().parseFromString( txt, "application/xml" ));
+		}catch( ex )
+		{
+			console.log("XHR handler error", ex );
+		}
 	}
 	xhr.send();
 }

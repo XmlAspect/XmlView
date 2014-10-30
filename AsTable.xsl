@@ -87,16 +87,21 @@ xmlns:xv="http://xmlaspect.org/XmlView"
 						<xsl:with-param name="data" select="*" />
 					</xsl:call-template>
 				</xsl:variable>
-				<xsl:apply-templates select="exslt:node-set($sortedData)" mode="DisplayAs"/>
+				<div class="XmlViewRendered">
+					<xsl:apply-templates select="exslt:node-set($sortedData)" mode="DisplayAs"/>
+				</div>
 			</body>
-			<head>
-				<script>
-					//function sortTH( th ){		alert( th.title );	}
-				</script>
-			</head>
 		</html>
 	</xsl:template>
-
+	<xsl:template match="/" priority="-20" name="BodyOnly">
+		<xsl:variable name="sortedData">
+			<xsl:call-template name="StartSort">
+				<xsl:with-param name="data" select="*" />
+			</xsl:call-template>
+		</xsl:variable>
+		<xsl:apply-templates select="exslt:node-set($sortedData)" mode="DisplayAs"/>
+	</xsl:template>
+	
 <xsl:template name="StartSort">
 	<xsl:param name="data"/>
 	<xsl:param name="sortNode"/>

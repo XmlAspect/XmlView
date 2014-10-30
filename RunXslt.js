@@ -27,24 +27,32 @@
             if ('undefined' == typeof XSLTProcessor)
             {	xsl.setProperty("AllowXsltScript", true);
 				msg.innerHTML = xml.transformNode(xsl);
+				injectJS();
                 return;
             }
             p = new XSLTProcessor();
             p.importStylesheet(xsl);
             r = p.transformToFragment( xml, document );
             b.replaceChild( r, b.firstChild );
-			var d = document
-            ,	h = d.getElementsByTagName('head')[0] || d.getElementsByTagName('div')[0] || document.documentElement
-            ,	s = d.createElementNS ? d.createElementNS(h.namespaceURI || 'http://www.w3.org/1999/xhtml', 'script') : d.createElement('script');
-            s.setAttribute('src', jsUrl);
-			h.appendChild(s);
+			injectJS();
+
+				function
+			injectJS()
+			{	var d = document
+				,	h = d.getElementsByTagName('head')[0] || d.getElementsByTagName('div')[0] || document.documentElement
+				,	s = d.createElementNS ? d.createElementNS(h.namespaceURI || 'http://www.w3.org/1999/xhtml', 'script') : d.createElement('script');
+				s.setAttribute('src', jsUrl);
+				h.appendChild(s);
+			}
         });
     });
-    function forEach( arr, callback, pThis )
-    {
-        for( var i=0; i<arr.length;i++)
-           callback.call( pThis||arr, arr[i], i , pThis||arr );
-    }
+
+    function 
+forEach( arr, callback, pThis )
+{
+    for( var i=0; i<arr.length;i++)
+        callback.call( pThis||arr, arr[i], i , pThis||arr );
+}
         function
 Json2Xml( o, tag )
 {   var noTag = "string" != typeof tag;
@@ -76,7 +84,6 @@ Json2Xml( o, tag )
 getXml( url, callback )
 {
 	var xhr = window.ActiveXObject ? new ActiveXObject("Msxml2.XMLHTTP") : new XMLHttpRequest();
-//       xhr.url = url;
     xhr.open("GET", url, false);
     try {xhr.responseType = "msxml-document"} catch(err) {} // Helping IE11
     xhr.onreadystatechange = function()
