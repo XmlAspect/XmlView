@@ -16,9 +16,9 @@ header("Access-Control-Allow-Origin: *");
 
         function onLoad()
         {
-
-	var xslUrl = "http://mylocal/xa/XmlView/AsTable.xsl"
-	,	xmlUrl = 'http://localhost/xa/XmlView/countries.xml';
+    var baseUrl = "https://cdn.xml4jquery.com/ajax/libs/XmlView/1.0.0/"
+    ,   xslUrl = baseUrl+"AsTable.xsl"
+	,	xmlUrl = baseUrl+'countries.xml';
     document.body.innerHTML = "<a href='"+xslUrl+"'> loading "+xslUrl+"</a>";
     getXml( xmlUrl, function (xml)
     {   //document.domain = XslHost;
