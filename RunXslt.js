@@ -1,7 +1,7 @@
 ﻿(function()
 {   var XHTML   = "http://www.w3.org/1999/xhtml"
     ,   xslName = "AsTable.xsl"
-    ,   baseUrl = "http://xmlaspect.org/XmlView/"
+    ,   baseUrl = "https://cdn.xml4jquery.com/ajax/libs/XmlView/1.0.0/"
     ,   xslUrl  = baseUrl+xslName
     ,   jsUrl  = baseUrl+"XmlView.js"
     ,   b       = document.body || document.documentElement

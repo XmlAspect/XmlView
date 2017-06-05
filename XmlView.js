@@ -14,7 +14,7 @@
 	,	DES = "descending"
     ,	xslName = "AsTable.xsl"
 	,	NS = "http://xmlaspect.org/XmlView"
-    ,	baseUrl = ((document.location.hostname == 'localhost' ) ? document.location.pathname.substring( 0,document.location.pathname.lastIndexOf('/')) : NS ) + '/'
+    ,	baseUrl = "https://cdn.xml4jquery.com/ajax/libs/XmlView/1.0.0/"
     ,	xslUrl = baseUrl + xslName
 	,	xmlUrl = document.location.href
     ,	b = document.body || document.documentElement
