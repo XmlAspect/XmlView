@@ -7,7 +7,7 @@ Bookmarklet, XSLT rule will help to present XML in browser as a table, bar/pie c
 
 See instructions and configuration wizard on <a href="http://xmlaspect.org/XmlView" >project page</a>. 
 
-Live docs and discussion at <a href="https://apifusion.com/wiki/index.php/XmlAspect.org/XmlView">ApiFusion.org</a>
+Live docs and discussion at <a href="https://www.apifusion.com/wiki/index.php/XmlAspect.org/XmlView">ApiFusion.org</a>
 
 ## Release sequence:
 replace (should be only 1 occurence) XmlView/1.x.y/ with new version in
