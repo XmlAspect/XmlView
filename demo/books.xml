@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<?xml-stylesheet type="text/xsl" href="AsTable.xsl"?>
+<?xml-stylesheet type="text/xsl" href="../AsTable.xsl"?>
 
 <!DOCTYPE SearchResult>
 
@@ -106,7 +106,7 @@ He might be elegant, but there's no mistaking it--the gentleman tied to the lamp
     </html:form>
   </Toolbar>
 
-  <SearchTitle>ZZZZZZZZZ Amazon.com Search Results for: the keywords include "Road"</SearchTitle>
+  <SearchTitle> Amazon.com Search Results for: the keywords include "Road"</SearchTitle>
 </Header>
 
 <html:script src="books.js" type="text/javascript" />

@@ -21,8 +21,12 @@ xmlns:xv="http://xmlaspect.org/XmlView"
 	standalone="yes"
 	indent="yes"
   />
+    <!--
+        let processor = new XSLTProcessor();  // starts the XSL processor
+        processor.setParameter(null, "baseUrl", new URL('./', import.meta.url).pathname);
+    -->
 	<xsl:param name="url" />
-	<xsl:param name="baseUrl" />
+	<xsl:param name="baseUrl" select="substring-before(substring-after(/processing-instruction('xml-stylesheet'),'href=&quot;'),'AsTable.xsl&quot;')"  />
 	<xsl:param name="sort" />
 	<!-- select = "exslt:node-set($x) IE compatibility -->
 		<msxsl:script language="JScript" implements-prefix="exslt">
@@ -30,18 +34,13 @@ xmlns:xv="http://xmlaspect.org/XmlView"
 				var dd = eval("this['node-set'] =  function (x) { return x; }");
 			]]>
 		</msxsl:script>
-	
-	
-	
-	
+
 	<xsl:variable name="sorts"	select="//xsl:sort"	/>
-	
-<func:function name="my:count-elements">
+
+    <func:function name="my:count-elements">
       <func:result select="count(//*)" />
 </func:function>
-	
-	
-	
+
 	<xsl:template match="/">
 		<html>
 			<head>
@@ -79,7 +78,7 @@ xmlns:xv="http://xmlaspect.org/XmlView"
 					legend label{ text-shadow: -1px -1px 1px #fff, -1px 0px 1px #fff, 0px -1px 1px #fff, 1px 1px 1px #999, 0px 1px 1px #999, 1px 0px 1px #999, 1px 1px 5px #113;}
 					legend label b, legend label i{ margin-right: 0.5em; } 
 				</style>
-				<script type="text/javascript" src="XmlView.js">/**/</script>
+				<script type="module" src="{$baseUrl}XmlView.js">/**/</script>
 			</head>
 			<body>
 				<xsl:variable name="sortedData">
@@ -128,10 +127,6 @@ xmlns:xv="http://xmlaspect.org/XmlView"
 <!-- skip XmlView injected data from sorting results -->	
 <xsl:template mode="SortData"		match="*[@priority='100']" priority="300"></xsl:template>
 <xsl:template mode="DisplayAsTable" match="*[@priority='100']" priority="300"></xsl:template>
-	
-<!--
-<xsl:include href="sortParameters.xsl"/>	
--->		
 
 	<xsl:template mode="DisplayAs"	match="*" ><!-- distinct tags, match to 1st  -->
 		<xsl:variable name="tagName" select="name()" />
@@ -228,8 +223,7 @@ xmlns:xv="http://xmlaspect.org/XmlView"
 						</xsl:variable>
 						
 						<th><a	href="#" 
-								onclick="sortTH(this);return false;" 
-								title="{$p}" 
+								title="{$p}"
 								xv:sortpath="{$p}"
 							   ><span><xsl:value-of select="$direction"/> <sub><xsl:value-of select="$order"/> </sub></span>
 								
