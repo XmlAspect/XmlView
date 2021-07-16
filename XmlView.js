@@ -9,11 +9,7 @@
 	*/
 const xslUrl = new URL('AsTable.xsl', import.meta.url).pathname;
 
-const XHTML        = "http://www.w3.org/1999/xhtml"
-    , NS           = "http://xmlaspect.org/XmlView"
-    , baseUrl      = "https://cdn.xml4jquery.com/ajax/libs/XmlView/1.0.0/"
-    , xmlUrl       = document.location.href
-    , b            = document.body || document.documentElement
+const xmlUrl       = document.location.href
     , sortRulesArr = []
     , states       = { descending: ACS, ascending: undefined, "undefined": DES, 'null': DES };
 

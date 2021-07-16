@@ -8,7 +8,7 @@ Bookmarklet, esm JS, and XSLT for presenting XML or JSON as super-sortable HTML 
 
 Bookmarklet, XSLT rule will help to present XML in browser as a table.
 
-[Live demo](https://unpkg.com/@xmlaspect/xml-view@1.0.1/demo/index.html)
+[Live demo](https://unpkg.com/@xmlaspect/xml-view@1.0.2/demo/index.html)
 | [Live docs and discussion](https://apifusion.com/wiki/index.php?title=XmlAspect.org/XmlView)
 
 # API
@@ -22,7 +22,7 @@ There are no dependencies, add to your project either by
 
 or use directly from CDN
 ```js
-    import XmlView from 'https://unpkg.com/@xmlaspect/xml-view@1.0.1/XmlView.js';       
+    import XmlView from 'https://unpkg.com/@xmlaspect/xml-view@1.0.2/XmlView.js';       
 ```
 ## Add transformation
 ### in XML 

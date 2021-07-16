@@ -1,6 +1,6 @@
 {
     "name": "@xmlaspect/xml-view",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "Bookmarklet, JS, and XSLT for presenting XML or JSON as super-sortable HTML table",
     "author": "Sasha Firsov",
     "license": "Apache-2.0",

@@ -10,17 +10,18 @@
         img{ vertical-align: top; box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75); margin:16px;}
     </style>
     <script type="text/javascript">
+        const RUNXSL='../RunXslt.js'
         function BookmarkletBody(d,s,h)
         {
             h = d.getElementsByTagName('head')[0] || d.getElementsByTagName('div')[0] || document.documentElement;
             s = d.createElementNS ? d.createElementNS(h.namespaceURI || 'http://www.w3.org/1999/xhtml', 'script') : d.createElement('script');
-            s.setAttribute('src','https://cdn.xml4jquery.com/ajax/libs/XmlView/1.0.0/RunXslt.js');
-            s.setAttribute('src','../RunXslt.js');
+            s.type='module';
+            s.src=RUNXSL;
             h.appendChild(s);
         }
         function InitBookmarks()
         {
-            let s = "" + BookmarkletBody;
+            let s = ("" + BookmarkletBody).replace('RUNXSL','"'+new URL(RUNXSL, window.location.href).href+'"');
             s = s.replace(/\s+/g, '').replace("BookmarkletBody", '');
             document.getElementById("BookmarkletTag").href = "javascript:(" + s + ")(document)";
         }
