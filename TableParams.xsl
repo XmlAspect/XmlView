@@ -61,7 +61,10 @@
         <xsl:param name="fieldTableName" select="name($rows[1])"/>
 
         <xsl:variable name="uniqueFields">
-            <xsl:call-template name="FilterUnique">
+			<xsl:call-template name="FilterUnique">
+				<xsl:with-param name="nodes" select="$rows[name()=$fieldTableName]/@*"/>
+			</xsl:call-template>
+			<xsl:call-template name="FilterUnique">
                 <xsl:with-param name="nodes" select="$rows[name()=$fieldTableName]/*"/>
             </xsl:call-template>
         </xsl:variable>
@@ -77,18 +80,24 @@
         </xv:table>
     </xsl:template>
 
-    <xsl:template match="node()|@*" mode="reportField">
-        <xv:field title="{name()}"/>
+    <xsl:template match="node()" mode="reportField"><xv:field title="{name()}"/></xsl:template>
+    <xsl:template match="node()[starts-with(name(), 'attr_')]" mode="reportField">
+        <xv:field title="@{substring(name(),6,128)}"/>
+    </xsl:template>
+    <xsl:template match="@*" mode="reportField">
+        <xv:field title="@{name()}"/>
     </xsl:template>
 
+	<xsl:template match="*"  mode="FilterUnique-Clone"><xsl:copy/></xsl:template>
+	<xsl:template match="@*" mode="FilterUnique-Clone"><xsl:element name="attr_{substring(name(),1,128) }"/></xsl:template>
 
-    <xsl:template match="*" name="FilterUnique">
+	<xsl:template match="*" name="FilterUnique">
         <xsl:param name="nodes" select="."/>
         <xsl:variable name="allFieldsSet" select="exslt:node-set($nodes)"/>
         <xsl:variable name="allFieldsSorted">
             <xsl:for-each select="$allFieldsSet">
                 <xsl:sort select="name()"/>
-                <xsl:copy/>
+				<xsl:apply-templates mode="FilterUnique-Clone" select="."/>
             </xsl:for-each>
         </xsl:variable>
         <xsl:variable name="allFieldsSortedSet" select="exslt:node-set($allFieldsSorted)"/>
@@ -102,11 +111,6 @@
                 </xsl:if>
             </xsl:for-each>
         </xsl:variable>
-        <!--
-		<xsl:for-each select="exslt:node-set($uniqueFields)">
-			<xsl:copy-of select="."/>
-		</xsl:for-each>
--->
         <xsl:copy-of select="exslt:node-set($uniqueFields)"/>
     </xsl:template>
 
