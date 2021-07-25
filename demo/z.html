@@ -10,7 +10,7 @@
 <script type="module">
     import {loadXml,Transform} from '../xml-toolkit.js'
     const   modUrl  = relUrl => new URL(relUrl, import.meta.url).pathname;
-    const xml        = await loadXml( modUrl('./books.xsl'          ) )
+    const xml        = await loadXml( modUrl('./books.xml'          ) )
     ,     xslParams  = await loadXml( modUrl('../TableParams.xsl'   ) )
     ,     xslAsTable = await loadXml( modUrl('../AsTable.xsl'       ) );
 
