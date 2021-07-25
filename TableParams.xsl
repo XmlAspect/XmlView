@@ -50,6 +50,7 @@
                     <xsl:call-template name="AsTable">
                         <xsl:with-param name="rows" select="$uniqueNode"/>
                     </xsl:call-template>
+					<xsl:apply-templates mode="CheckTables" select="$uniqueNode"/>
                 </xsl:otherwise>
             </xsl:choose>
         </xsl:for-each>
