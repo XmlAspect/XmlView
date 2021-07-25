@@ -1,287 +1,54 @@
-﻿function sortTH(){}
+﻿import { getXml, o2p,p2o, ACS, DES, sortRules2arr, Transform, triggerSortOrder, url2SortRules } from "./xml-toolkit.js";
 
-(function ()
-{
-	/*	
+	/*
 		1. Extract sorting rules from URL
 		2. Get original XML, XSLT
 		3. Sort the XML
 		4. Transfrom with filtering
 		5. populate back into body		
 	*/
-	var XHTML = "http://www.w3.org/1999/xhtml"
-	,	ACS	= "ascending"
-	,	DES = "descending"
-    ,	xslName = "AsTable.xsl"
-	,	NS = "http://xmlaspect.org/XmlView"
-    ,	baseUrl = "https://cdn.xml4jquery.com/ajax/libs/XmlView/1.0.0/"
-    ,	xslUrl = baseUrl + xslName
-	,	xmlUrl = document.location.href
-    ,	b = document.body || document.documentElement
-	,	sortRulesArr = []
-	,	states = { descending: ACS, ascending: undefined, "undefined": DES, 'null': DES };
+const xslUrl = new URL('AsTable.xsl', import.meta.url).pathname;
 
-	url2SortRules( document.location.search.substring(1) );
-	url2SortRules( document.location.hash.substring(1) );
+const xmlUrl       = document.location.href
+    , sortRulesArr = []
+    , states       = { descending: ACS, ascending: undefined, "undefined": DES, 'null': DES };
+
+url2SortRules( document.location.search.substring(1) );
+url2SortRules( document.location.hash  .substring(1) );
 	
-	console.log( sortRulesArr );
 
-	document.body || "complete" == document.readyState 
-		? OnLoad()
-		: document.addEventListener( "DOMContentLoaded", OnLoad, false );
-
-	return; // ============================
+document.body || "complete" === document.readyState
+    ? OnLoad()
+    : document.addEventListener( "DOMContentLoaded", OnLoad, false );
 
 	function 
 OnLoad()
 	{
 		getXml( xmlUrl, function (xml)
-		{	console.log("loaded",xmlUrl);
-			getXml( xslUrl, function (xsl, p, r)
-			{	console.log("loaded",xslUrl);
-				sortTH = function sortTH(th)
-				{	var sp = th.getAttribute("xv:sortpath")
+		{	getXml( xslUrl, function (xsl, p, r)
+			{	function sortTH(ev)
+				{	const a = ev.target
+                    ,   sp = a.getAttribute("xv:sortpath")
 					,	xp = sp.split('/')
 					, id = xp.pop()
 					, collectionId = xp.join('/')
-					, order = states[th.getAttribute('order')];
+					, order = states[a.getAttribute('order')];
 
-					triggerSortOrder(id);
-					
-					Transform(xml, xsl);					
+					triggerSortOrder(id, undefined, sortRulesArr, states );
+
+                    enableSort( Transform( xml, xsl, sortRulesArr ) );
 												
-					var params = p2o( document.location.hash.substring(1) );
-					params.sort = sortRules2arr();
+					const params = p2o( document.location.hash.substring(1) );
+					params.sort = sortRules2arr(sortRulesArr);
 					window.location.href = '#' + o2p(params);
-				};
+				}
+				const enableSort = dom =>
+                    [...dom.querySelectorAll('[xv\\:sortpath]')]
+                        .forEach(el=> el.addEventListener('click',sortTH) );
 				if( sortRulesArr.length )
-					Transform( xml, xsl );
+                    enableSort( Transform( xml, xsl, sortRulesArr ) );
+				else
+                    enableSort( document.body );
 			});
 		});
 	}
-
-	function
-sortRules2arr()
-{
-	return sortRulesArr.map(function(el){ return ( DES == el.ord ? '-' : '' ) + el.key ; });
-}
-	function
-url2SortRules( params )
-{
-	( p2o( params ).sort || [] ).forEach( triggerSortOrder );
-}
-	function
-triggerSortOrder( id, ord )
-{
-	if( 'number' == typeof ord )
-		ord = ACS;
-
-	var b = id.charAt(0);
-	if( '-' == b )
-	{	id = id.substring(1);
-		ord = DES;
-	}
-	if( '+' == b )
-	{	id = id.substring(1);
-		ord = ACS;
-	}
-
-	var arr = sortRulesArr
-	,	i = -1
-	,	found= arr.some( function(el, n)
-		{ 
-			return el.key == id && ((i=n),true); 
-		} );
-	var el	= ( i < 0 )
-			? { key:id, ord: ord }
-			: arr.splice(i,1)[0];
-	el.ord = ord || states[el.ord];
-	if( el.ord )
-		arr.unshift(el);
-}	
-	function 
-p2o( urlParams )
-{	var o = {};
-	urlParams && urlParams.split('&').forEach(function (kv)
-	{	var a = kv.split('=');
-		if( a.length > 1 && a[1] )
-			o[ a[0] ] = /*decodeURIComponent*/( a[1] ).split(',');
-	});
-	return o;
-}
-	function
-o2p( o )
-{	var p = [];
-	for( var k in o )
-		p.push( k+'='+ /*encodeURIComponent*/( o[k].join(',') ) );
-	return p.join('&');
-}
-	function 
-unique( arr )
-{
-	//	return arr.filter(function(r, i, ar){ return ar.indexOf(r) === i; });
-	var rin = {};
-	return arr.filter(function (r)
-	{
-		return !(r in rin) && (rin[r] = r);
-	});
-}
-	function 
-Transform( xml, xsl )
-{
-	console.log( "Transform" );
-	UpdateSortRules( xml, xsl );
-
-	if( document.querySelector('.XmlViewRendered') )
-		XPath_node("//xsl:template[@name='BodyOnly']", xsl ).setAttribute("priority","20");
-
-	if ('undefined' == typeof XSLTProcessor)
-	{	xsl.setProperty("AllowXsltScript", true);
-		var r = xml.transformNode(xsl)
-		,	b = document.body || document.documentElement;	
-		b.innerHTML = r;
-		return;
-	}
-	var p = new XSLTProcessor();
-	p.importStylesheet(xsl);
-
-	var r = p.transformToFragment(xml, document)
-	,	b = document.querySelector('.XmlViewRendered') || document.body || document.documentElement;
-	cleanElement(b);
-	b.appendChild(r);
-}
-	function 
-UpdateSortRules( xml, xsl )
-{
-	// 1. create sorting template out of SortDataDefault
-	var	ids = sortRulesArr.map(function(el){ return el.key; })
-	,	collectionId = "*[* [" +ids.join(" or ") + "] ]"
-	,	template = XPath_node("//xsl:template[@name='SortDataDefault']", xsl).cloneNode(true)
-	,	sortNode = XPath_node("//xsl:sort", template)
-	,	prevSort = XPath_node("//xsl:template[@priority='100']", xsl);
-
-	console.log( "UpdateSortRules",collectionId, ids);
-
-	// 2. remove previous injection
-	for( var n = sNode(); n; n = sNode() ) 
-		n.parentNode.removeChild(n);
-	if( prevSort )
-		prevSort.parentNode.removeChild( prevSort );
-
-	if( ! sortRulesArr.length )
-		return;
-
-	// 3. inject sorting template into XML
-	template.setAttribute('match', collectionId);
-	template.setAttribute( "priority", "100" );
-	template.removeAttribute('name');
-	ids.forEach( function( id, i )
-	{	var n = sortNode.cloneNode(true)
-		,	ord = sortRulesArr[i].ord ;
-		n.setAttribute('select', id);
-		// n.setAttribute('id', i+1);
-		ord &&	n.setAttribute('order', ord );		
-		sortNode.parentNode.appendChild( n );
-	});
-
-	xsl.documentElement.appendChild(template);
-console.log( template.outerHTML );
-	var sortTemplate = xml.importNode(template,true);
-	xml.documentElement.appendChild(sortTemplate);
-
-	function sNode(){ return XPath_node("//*[@priority='100']", xml); }
-}
-
-	function 
-XPath_node(xPath, node)
-{
-	var d = node.ownerDocument || node
-	,	nsResolver = d.createNSResolver && d.createNSResolver(d.documentElement);
-	if( d.evaluate )
-		return (node.ownerDocument || node)
-			.evaluate(xPath, node, nsResolver, 9, null)
-			.singleNodeValue;
-	d.setProperty('SelectionLanguage', 'XPath');
-	d.setProperty('SelectionNamespaces', 'xmlns:xsl="http://www.w3.org/1999/XSL/Transform"');
-  
-	return node.selectSingleNode( xPath );//,nsmgr )
-}
-	function 
-XPath_nl(xPath, node)
-{
-	var d = node.ownerDocument || node
-	,	nsResolver = d.createNSResolver && d.createNSResolver(d.documentElement);
-	if( d.evaluate )
-		return (node.ownerDocument || node).evaluate( xPath, node, nsResolver, 0, null );
-
-	d.setProperty('SelectionLanguage', 'XPath');
-	d.setProperty('SelectionNamespaces', 'xmlns:xsl="http://www.w3.org/1999/XSL/Transform"');
-	return node.SelectNodes( xPath );//, nsmgr );
-}
-        function
-Json2Xml( o, tag )
-{   var noTag = "string" != typeof tag;
-
-    if( o instanceof Array )
-    {   noTag &&  (tag = 'array');
-        return "<"+tag+">"+o.map(function(el){ return Json2Xml(el,tag); }).join()+"</"+tag+">";
-    }
-    noTag &&  (tag = 'r');
-	tag=tag.replace( /[^a-z0-9]/gi,'_' );
-    var oo  = {}
-    ,   ret = [ "<"+tag+" "];
-    for( var k in o )
-        if( typeof o[k] == "object" )
-            oo[k] = o[k];
-        else
-            ret.push( k.replace( /[^a-z0-9]/gi,'_' ) + '="'+o[k].toString().replace(/&/gi,'&#38;')+'"');
-    if( oo )
-    {   ret.push(">");
-        for( var k in oo )
-            ret.push( Json2Xml( oo[k], k ) );
-        ret.push("</"+tag+">");
-    }else
-        ret.push("/>");
-    return ret.join('\n');
-}
-        function 
-getXml(url, callback)
-{
-	console.log(url);
-	var xhr = window.ActiveXObject ? new ActiveXObject("Msxml2.XMLHTTP") : new XMLHttpRequest();
-	//       xhr.url = url;
-	xhr.open("GET", url, false);
-	try { xhr.responseType = "msxml-document" } catch (err) { } // Helping IE11
-	xhr.onreadystatechange = function ()
-	{
-		if( 4 != xhr.readyState )
-			return;
-		try
-		{
-			if( xhr.responseXML )
-			return callback(xhr.responseXML);
-			var txt = xhr.responseText.trim();
-			if( txt.charAt(0)!='<' )
-			{
-				console.log("treating as JSON",txt.substring(0,50));
-				txt = Json2Xml( JSON.parse(txt) );
-			}
-			callback(new DOMParser().parseFromString( txt, "application/xml" ));
-		}catch( ex )
-		{
-			console.log("XHR handler error", ex );
-		}
-	}
-	xhr.send();
-}
-function createElement(name)
-{
-	return document.createElementNS ? document.createElementNS(XHTML, name) : document.createElement(name);
-}
-function cleanElement(el)
-{
-	while (el.lastChild)
-		el.removeChild(el.lastChild);
-}
-
-})();

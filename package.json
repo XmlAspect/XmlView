@@ -1,0 +1,32 @@
+{
+    "name": "@xmlaspect/xml-view",
+    "version": "1.0.2",
+    "description": "Bookmarklet, JS, and XSLT for presenting XML or JSON as super-sortable HTML table",
+    "author": "Sasha Firsov",
+    "license": "Apache-2.0",
+    "main": "XmlView.js",
+    "module": "XmlView.js",
+    "type": "module",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/sashafirsov/html-demo-element.git"
+    },
+    "keywords": [
+        "XML",
+        "HTML",
+        "XSLT",
+        "Browser",
+        "Table"
+    ],
+    "scripts": {
+        "start": "node demo/dev-server.cjs"
+    },
+    "dependencies": {
+    },
+    "devDependencies": {
+    },
+    "funding": {
+        "type": "patreon",
+        "url": "https://www.patreon.com/sashafirsov"
+    }
+}

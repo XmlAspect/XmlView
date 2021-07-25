@@ -5,6 +5,10 @@ header("Access-Control-Allow-Origin: *");
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <title>XmlView - XmlAspect.org</title>
+    <!--
+    bookmarklet forwards to renderer.php which has ORIGIN set to original XML document.
+    PROS: ? no cross domain issues CONS: if PHP , incompatible with CDN
+    -->
     <style>
         iframe{float:right; width:30%; height:10em;}
         .BookmarkletTag{ font-size:large; }

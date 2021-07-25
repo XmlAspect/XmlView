@@ -1,0 +1,143 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title> XmlView - JSON & XML as HTML table bookmarklet </title>
+    <style>
+        iframe,object{height:10em;}
+        fieldset {display: inline-block;vertical-align: top;border-radius: 1em;border-bottom: none;border-left: none;}
+        input,iframe,object{width:100%;}
+        #BookmarkletTag{ font-size:large; border: 1px solid blue; border-radius: 4px; margin:4px;padding: 4px;}
+        img{ vertical-align: top; box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75); margin:16px;}
+    </style>
+    <script type="text/javascript">
+        const RUNXSL='../RunXslt.js'
+        function BookmarkletBody(d,s,h)
+        {
+            h = d.getElementsByTagName('head')[0] || d.getElementsByTagName('div')[0] || document.documentElement;
+            s = d.createElementNS ? d.createElementNS(h.namespaceURI || 'http://www.w3.org/1999/xhtml', 'script') : d.createElement('script');
+            s.type='module';
+            s.src=RUNXSL;
+            h.appendChild(s);
+        }
+        function InitBookmarks()
+        {
+            let s = ("" + BookmarkletBody).replace('RUNXSL','"'+new URL(RUNXSL, window.location.href).href+'"');
+            s = s.replace(/\s+/g, '').replace("BookmarkletBody", '');
+            document.getElementById("BookmarkletTag").href = "javascript:(" + s + ")(document)";
+        }
+        function OnLoad()
+        {
+            $("XmlUrl").addEventListener("input",UpdateXml);
+            InitBookmarks();
+            UpdateXml();
+        }
+        function UpdateXml()
+        {
+            $("demoFrame").src= $("XmlUrl").value;
+            InitBookmarks();
+        }
+        function $(id)
+        {   var r = document.getElementById(id); 
+            if( !r.addEventListener )
+                r.addEventListener = x_addEventListener;
+            return r;
+        }
+        function x_addEventListener ( ev, callback ){ return this.attachEvent( 'on'+ev,callback ) }
+
+    </script>
+</head>
+<body onload="OnLoad();">
+    <h1> XmlView - JSON & XML as HTML table bookmarklet </h1>
+    <main>
+        <fieldset>
+            <legend>Intro</legend>
+		<div style="width:16em; float:right;">
+					<a href="https://twitter.com/share" class="twitter-share-button" data-via="SashaFirsov" data-hashtags="XmlAspect">Tweet</a>
+					<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+		</div>
+            XmlView is a set of tools for XML/JSON presentation in browser.<br />
+
+			Bookmarklet, XSLT rule will help to present XML/JSON in browser as a sortable table.<br />
+			UI is adjustable with table collapsing and selection highlighting.
+			<div>
+				<h3>open sample <a href="countries.xml">xml</a> | <a href="webapp.json">json</a> or <i>your</i> web service URL in browser<br/>
+                    Other samples: <a href="https://api.flickr.com/services/rest?content_type=7&extras=can_comment%2Ccount_comments%2Ccount_faves%2Cdescription%2Cisfavorite%2Clicense%2Cmedia%2Cneeds_interstitial%2Cowner_name%2Cpath_alias%2Crealname%2Crotation%2Curl_c%2Curl_l%2Curl_m%2Curl_n%2Curl_q%2Curl_s%2Curl_sq%2Curl_t%2Curl_z&per_page=500&page=1&lang=en-US&text=sea%20creatures%20underwater&viewerNSID=&method=flickr.photos.search&csrf=&api_key=6be36241a79ee73532f010abfd103a16&format=json&reqId=3fdc3e73&nojsoncallback=1#sort=@width_l,-@height_l,-@width_c,-@height_c"
+                    >Json from Flickr</a>, <a href="https://www.linkedin.com/pulse-fe/api/v1/feed/channel?id=230&start=10&count=10&height=250&width=744">LinkedIn</a>
+                </h3>
+				<img src="DefViewJson.png" /> 
+				<img src="DefView.png" /> 
+				<h3>after click on browser bookmarklet button the data will be shown as table</h3>
+				<img src="Bookmarklet.png" />
+				<img src="XmlView.png" /> 
+			</div>
+        </fieldset>
+        <fieldset>
+            <legend>Bookmarklet</legend>
+			Bookmarklet is a button in a browser bookmarks toolbar. <br />
+			It will change opened in a browser XML/JSON presentation to collapsible and sortable tables.<br />
+            How it works? The link runs the script on current page applying the <i>AsTable.xsl</i> transformation. <br />
+			To use it:
+            <ol>
+				<li>drag this link onto browser toolbar : <a id="BookmarkletTag" href="#">XmlView</a></li>
+				<li>open <a href="countries.xml">xml</a> | <a href="webapp.json">json</a> or <b>your</b> XML/JSON in browser</li>
+				<li>Click on bookmarklet to run <a href="../RunXslt.js">RunXslt.js</a> which should re-render XML as table</li>
+				<li>XML/JSON shall be accessible on web site <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS">to be read by XHR</a><br />
+					or XSLT <a href="https://www.w3.org/Style/styling-XML.en.html">included explicitly in XML</a>.
+				</li>
+			</ol>
+        </fieldset>
+        <fieldset>
+            <legend>XSLT</legend>
+            <a href="../AsTable.xsl">AsTable.xsl</a> used by following samples:
+			<ul>
+				<li><a href="AsTable.xml">AsTable.xml</a> for values in <b>attributes</b></li>
+				<li><a href="wikipediaSearch.xml">wikipediaSearch.xml</a> for values in tag text</li>
+				<li><a href="books.xml">books.xml</a> is a complex hierarchy sample</li>
+			</ul>
+			Functional component
+			<ul>
+				<li>Loader reads XML or JSON string and converts to XML document</li>
+				<li>XSLT referenced from within XML renders UI by browser without JS. </li>
+				<li>Collapsing and selection controlled by pure CSS </li>
+				<li>Sorting is done by <a href="../XmlView.js">XmlView.js</a>. <br />
+					It also redraws UI if the sorting is passed via URL parametrs.
+				</li>
+			</ul>
+        </fieldset>
+        <fieldset>
+            <legend>Links</legend>
+            <ul>
+                <li><a href="https://github.com/XmlAspect/XmlView">Sources</a></li>
+                <li>Support, Wish list, Live docs and discussion at <a href="https://www.apifusion.com/wiki/index.php/XmlAspect.org/XmlView">ApiFusion.org</a></li>
+                <li><a href="countries.xml">countries.xml</a> country list compiled from
+                    <a href="https://github.com/umpirsky/country-list/blob/master/country/cldr/en/country.xml">umpirsky/country-list</a>,<br />
+					<a href="wikipediaSearch.xml">wikipediaSearch.xml</a> originated from <a href="http://api.geonames.org">api.geonames.org</a>
+				</li>
+				<li><a href="webapp.xml">webapp.xml</a> and <a href="webapp.json">webapp.json</a> from <a href="http://json.org/example">json.org</a></li>                
+                <li><hr />TODO: CDN list</li>
+            </ul>
+        </fieldset>
+        <fieldset>
+            <legend>TODO</legend>
+            <ul>
+                <li>JS API docs </li>
+                <li>XSLT API docs </li>
+                <li>Table styles editor links and instructions. <a href="http://tablestyler.com">tablestyler.com</a> - styler,
+                        <a href="http://www.tablesgenerator.com">tablesgenerator.com</a> - theme presets.
+                </li>
+				<li>Bar/pie charts as presentation</li>
+				<li>browser plugin</li>
+                <li>update on browser back/forward navigation</li>
+            </ul>
+        </fieldset>
+    </main>
+	DEMO. Change XML URL
+    <input type="text" placeholder="XML url" title="XML Url" value="wikipediaSearch.xml" id="XmlUrl"/>
+    To see the transformation XML in frame:
+    <iframe id="demoFrame" >xml will be shown here
+        TODO: use OBJECT instead of IFRAME: http://stackoverflow.com/questions/7315218/chrome-and-firefox-are-not-displaying-most-pdf-documents-in-an-iframe
+    </iframe>
+	<hr />
+	<pre style="text-align: right">Made with ❤️ in USA, ©2021 Sasha Firsov | licensed under <a href="../LICENSE">Apache 2.0</a></pre>
+</body>
+</html>
