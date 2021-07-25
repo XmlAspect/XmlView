@@ -1,0 +1,24 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title> XmlView - render XML as table demo </title>
+</head>
+<body >
+    <h1> XmlView - render XML as table demo </h1>
+	<hr />
+    <main id="mainDemo"></main>
+<script type="module">
+    import {loadXml,Transform} from '../xml-toolkit.js'
+    const   modUrl  = relUrl => new URL(relUrl, import.meta.url).pathname;
+    const xml        = await loadXml( modUrl('./books.xsl'          ) )
+    ,     xslParams  = await loadXml( modUrl('../TableParams.xsl'   ) )
+    ,     xslAsTable = await loadXml( modUrl('../AsTable.xsl'       ) );
+
+    const xmlParams = Transform( xml, xslParams, xml.createElement('xv:params') );
+    xml.documentElement.append(xmlParams);
+    debugger;
+    const outNode = Transform( xml, xslAsTable, mainDemo );
+console.log(xmlParams);
+</script>
+</body>
+</html>

@@ -63,37 +63,41 @@ unique( arr )
     return arr.filter( r=> !(r in rin) && (rin[r] = r) );
 }
     export function
-Transform( xml, xsl, sortRulesArr )
+Transform( xml, xsl, targetNode=(document.body || document.documentElement), sortRulesArr=[] )
 {
     UpdateSortRules( xml, xsl, sortRulesArr );
+    let t = targetNode;
 
-    if( document.querySelector('.XmlViewRendered') )
+    if( 'string' === typeof t )
+        t = document.querySelector(t);
+    const doc = t.ownerDocument;
+    if( doc.querySelector('.XmlViewRendered') )
         XPath_node("//xsl:template[@name='BodyOnly']", xsl ).setAttribute("priority","20");
 
     if ('undefined' == typeof XSLTProcessor)
     {	xsl.setProperty("AllowXsltScript", true);
-        const b = document.body || document.documentElement;
-        b.innerHTML = xml.transformNode(xsl);
-        return b;
+        t.innerHTML = xml.transformNode(xsl);
+        return t;
     }
     var p = new XSLTProcessor();
     p.importStylesheet(xsl);
 
-    const r = p.transformToFragment(xml, document)
-    ,	b = document.querySelector('.XmlViewRendered') || document.body || document.documentElement;
-    cleanElement(b);
-    b.appendChild(r);
-    return b;
+    const r = p.transformToFragment(xml, doc);
+    cleanElement(t);
+    t.appendChild(r);
+    return t;
 }
     export function
 UpdateSortRules( xml, xsl, sortRulesArr )
 {
+    if( !sortRulesArr || !sortRulesArr.length )
+        return;
     // 1. create sorting template out of SortDataDefault
     var	ids = sortRulesArr.map(function(el){ return el.key; })
-        ,	collectionId = "*[* [" +ids.join(" or ") + "] ]"
-        ,	template = XPath_node("//xsl:template[@name='SortDataDefault']", xsl).cloneNode(true)
-        ,	sortNode = XPath_node("//xsl:sort", template)
-        ,	prevSort = XPath_node("//xsl:template[@priority='100']", xsl);
+    ,	collectionId = "*[* [" +ids.join(" or ") + "] ]"
+    ,	template = XPath_node("//xsl:template[@name='SortDataDefault']", xsl).cloneNode(true)
+    ,	sortNode = XPath_node("//xsl:sort", template)
+    ,	prevSort = XPath_node("//xsl:template[@priority='100']", xsl);
 
     // 2. remove previous injection
     for( var n = sNode(); n; n = sNode() )
@@ -177,7 +181,7 @@ Json2Xml( o, tag )
     return ret.join('\n');
 }
     export function
-getXml(url, callback)
+getXml(url, callback, errback=()=>{})
 {
     var xhr = window.ActiveXObject ? new ActiveXObject("Msxml2.XMLHTTP") : new XMLHttpRequest();
     //       xhr.url = url;
@@ -198,8 +202,8 @@ getXml(url, callback)
             }
             callback(new DOMParser().parseFromString( txt, "application/xml" ));
         }catch( ex )
-        {
-            console.error("XHR handler error", ex );
+        {   console.error("XHR handler error", ex );
+            errback(ex);
         }
     }
     xhr.send();
@@ -214,4 +218,10 @@ cleanElement(el)
 {
     while (el.lastChild)
         el.removeChild(el.lastChild);
+}
+
+    export function
+loadXml( url )
+{
+    return new Promise( (resolve,reject)=>{ getXml(url, xml=>resolve(xml), err=>reject(err) ); })
 }
