@@ -57,13 +57,13 @@ xmlns:xvxsl="http://www.w3.org/1999/XSL/Transform"
 					th a{ color: #FFFF80; text-decoration:none; display:block;}
 					th a span{float:left;}
 					div>label, div>var{ margin-right:0.5em;}
-					
+
 					fieldset{border-radius: 1em;border-bottom: none;border-left: none;}
-					
+
 					/* collapse and select UI */
 					fieldset legend label{ cursor:pointer;}
 					input[type='checkbox']{ display:none;}
-					
+
 					input[type='checkbox']:checked+fieldset{ border:2px solid red; }
 					input[type='checkbox']:checked+input+fieldset div,
 					input[type='checkbox']:checked+input+fieldset legend label.collapse i,
@@ -71,13 +71,15 @@ xmlns:xvxsl="http://www.w3.org/1999/XSL/Transform"
 					input[type='checkbox']+fieldset .collapse b,
 					input[type='checkbox']+fieldset .select b
 					{display:none; }
-					
+
 					input[type='checkbox']:checked+input+fieldset .collapse b,
 					input[type='checkbox']+input:checked+fieldset .select b
 					{ display:inline;}
-					
+
 					legend label{ text-shadow: -1px -1px 1px #fff, -1px 0px 1px #fff, 0px -1px 1px #fff, 1px 1px 1px #999, 0px 1px 1px #999, 1px 0px 1px #999, 1px 1px 5px #113;}
-					legend label b, legend label i{ margin-right: 0.5em; } 
+					legend label b, legend label i{ margin-right: 0.5em; }
+					a.ascending:before{ content:'\25B2'; }
+					a.descending:before{ content:'\25BC'; }
 				</style>
 				<script type="module" src="{$baseUrl}XmlView.js">/**/</script>
 			</head>
@@ -181,17 +183,13 @@ xmlns:xvxsl="http://www.w3.org/1999/XSL/Transform"
 			<thead>
 				<tr>
 					<xsl:for-each select="exslt:node-set($thead)/*">
-                        <xsl:copy-of select="."/>
-						<!--
                         <th><a	href="#"
-								title="{$p}"
-								xv:sortpath="{$p}"
-							   ><span><xsl:value-of select="$direction"/> <sub><xsl:value-of select="$order"/> </sub></span>
-								
-								<xsl:value-of select="local-name()"/>
+								title="{text()}"
+								 class="{@order}"
+							   ><sub><xsl:value-of select="@sort"/></sub>								
+								<xsl:value-of select="text()"/>
 							</a>
 						</th>
-						-->
 					</xsl:for-each>
 				</tr>
 			</thead>
@@ -261,13 +259,13 @@ xmlns:xvxsl="http://www.w3.org/1999/XSL/Transform"
     <xvxsl:template mode="DisplayAs"	match="/SearchResult/BookSet/*[name()='Book'][1]" >
         <i><b>/SearchResult/BookSet/Book</b></i>
         <xsl:variable name="thead">
-            <th> Author      </th>
-            <th> BookCover   </th>
-            <th> ISBN        </th>
-            <th> ListPrice   </th>
-            <th> Price       </th>
-            <th> Synopsis    </th>
-            <th> Title       </th>
+            <th sort="2" order="descending"	> Author      </th>
+			<th								> BookCover   </th>
+            <th								> ISBN        </th>
+            <th								> ListPrice   </th>
+			<th sort="1" order="ascending"	> Price       </th>
+            <th								> Synopsis    </th>
+			<th sort="3" order="ascending"	> Title       </th>
         </xsl:variable>
         <xsl:variable name="headStrSet">
             <xsl:for-each select="exslt:node-set($thead)/*">|<xsl:value-of select="text()"/></xsl:for-each>
@@ -283,8 +281,8 @@ xmlns:xvxsl="http://www.w3.org/1999/XSL/Transform"
             <xsl:with-param name="trs">
                 <xsl:for-each select="../*[name()='Book']">
 					<xsl:sort select="substring(normalize-space(Price),2)" order="ascending" data-type="number"/>
-					<xsl:sort select="Author" order="descending"/>
-                    <xsl:sort select="Title" order="ascending"/>
+					<xsl:sort select="Author"   order="descending"  />
+                    <xsl:sort select="Title"    order="ascending"   />
                     <xsl:copy-of select="."/>
                 </xsl:for-each>
             </xsl:with-param>

@@ -15,10 +15,34 @@
     ,     xslAsTable = await loadXml( modUrl('../AsTable.xsl'       ) );
 
     const xmlParams = Transform( xml, xslParams, xml.createElement('xv:params') );
-    xml.documentElement.append(xmlParams);
-    debugger;
+    xslAsTable.documentElement.append(xmlParams);
+    // debugger;
     const outNode = Transform( xml, xslAsTable, mainDemo );
 console.log(xmlParams);
+// console.log(new XMLSerializer().serializeToString(xslAsTable));
+    (
+        function setClipboard(text) {
+            debugger;
+            var type = "text/plain";
+            var blob = new Blob([text], { type });
+            var data = [new ClipboardItem({ [type]: blob })];
+
+            return navigator.clipboard.write(data).then(
+                function () {
+                    console.log('success');
+                },
+                function () {
+                    console.log('failure');
+                }
+            );
+        }
+    )(
+
+        new XMLSerializer()
+            .serializeToString( xmlParams )
+            // .replace( '\\n', '\n' )
+            // .replace( '\\"', '"' )
+    )
 </script>
 </body>
 </html>
