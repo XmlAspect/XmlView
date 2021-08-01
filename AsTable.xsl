@@ -10,6 +10,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 xmlns:func="http://exslt.org/functions" 
 xmlns:my="my://own.uri" 
 xmlns:xv="http://xmlaspect.org/XmlView" 
+xmlns:xvxsl="http://www.w3.org/1999/XSL/Transform"
 	xmlns:exslt="http://exslt.org/common"
 	xmlns:msxsl="urn:schemas-microsoft-com:xslt"
 	exclude-result-prefixes="xhtml exslt msxsl"
@@ -126,18 +127,9 @@ xmlns:xv="http://xmlaspect.org/XmlView"
 
 <!-- skip XmlView injected data from sorting results -->	
 <xsl:template mode="SortData"		match="*[@priority='100']" priority="300"></xsl:template>
-<xsl:template mode="DisplayAsTable" match="*[@priority='100']" priority="300"></xsl:template>
 
 	<xsl:template mode="DisplayAs"	match="*" ><!-- distinct tags, match to 1st  -->
-		<xsl:variable name="tagName" select="name()" />
-		<xsl:choose>
-			<xsl:when test="count( ../*[name()=$tagName]) != 1">
-				<xsl:apply-templates select="." mode="DisplayAsTable" />
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:apply-templates select="." mode="DisplayAsTree" />
-			</xsl:otherwise>
-		</xsl:choose>
+        <xsl:apply-templates select="." mode="DisplayAsTree" />
 	</xsl:template>
 	<xsl:template mode="DisplayAs"	match="@*" >
 		<b><xsl:value-of select="name()"/></b>=<var><xsl:value-of select="."/></var>
@@ -173,56 +165,25 @@ xmlns:xv="http://xmlaspect.org/XmlView"
 		</xsl:if>
 	</xsl:template>
 
-	<xsl:template match="*" mode="DisplayAsTable" >
-		<xsl:param name="childName" select="name()"/>
-		<xsl:variable name="ZZheaders" select="@*|*" />		<!-- first child attributes and its children -->
-															<!-- TODO union of unique child names as not all rows have same children set. When sorting the missing attributes changing number of columns -->
-		<xsl:variable name="collection"  select=".."/>
-		<xsl:variable name="collectionPath"><xsl:apply-templates mode="xpath" select=".."></xsl:apply-templates></xsl:variable>
-		
-<xsl:variable name="hAll">
-	<xsl:for-each select="*|@*">
-		<xsl:variable name="p"  select="name()"/>
-		<xsl:choose>
-			<xsl:when test="count(.|../@*)=count(../@*)"><xsl:element name="{$p}"><xsl:attribute name="xv" ><xsl:value-of select="$p" /></xsl:attribute></xsl:element></xsl:when>
-			<xsl:when test="count( preceding-sibling::*[name()=$p]) != 0"></xsl:when>
-			<xsl:otherwise><xsl:copy/></xsl:otherwise>
-		</xsl:choose>
-	</xsl:for-each>
-</xsl:variable>
-		<xsl:variable name="headers" select="exslt:node-set($hAll)/*" />
+	<xsl:template name="DisplayAsTable" >
+		<xsl:param name="thead" />
+		<xsl:param name="trs" select="*"/>
+		<xsl:param name="collectionPath"/>
+		<xsl:param name="collectionName"/>
+
 		<table border="1">
-			<caption><!-- todo collapsible -->
+			<caption>
 				<var>
-					<xsl:attribute name="title"><xsl:value-of select="$collectionPath"/>/<xsl:value-of select="$childName"/></xsl:attribute>
-					<xsl:value-of select="$childName"/>
+					<xsl:attribute name="title"><xsl:value-of select="$collectionPath"/></xsl:attribute>
+					<xsl:value-of select="$collectionName"/>
 				</var>
 			</caption>
 			<thead>
 				<tr>
-					<xsl:for-each select="$headers">
-						<xsl:variable name="p" ><xsl:if test="name(.)=@xv">@</xsl:if><xsl:value-of select="local-name()"/></xsl:variable>
-						<xsl:variable name="fullPath" ><xsl:value-of select="$collectionPath"/>/<xsl:value-of select="$p"/></xsl:variable>
-						<xsl:variable name ="direction"		>
-							<xsl:for-each select="$sorts">
-								<xsl:if test="@select=$p">
-									<xsl:choose>
-										<xsl:when test="@order='ascending'">&#9650;</xsl:when>
-										<xsl:when test="@order='descending'">&#9660;</xsl:when>
-										<xsl:otherwise>&#9674;</xsl:otherwise>
-									</xsl:choose>
-								</xsl:if>
-							</xsl:for-each>
-						</xsl:variable>
-						<xsl:variable name ="order"		>
-							<xsl:for-each select="$sorts">
-								<xsl:if test="@select=$p">
-									<xsl:value-of select="count(preceding-sibling::xsl:sort) "/>
-								</xsl:if>
-							</xsl:for-each>
-						</xsl:variable>
-						
-						<th><a	href="#" 
+					<xsl:for-each select="exslt:node-set($thead)/*">
+                        <xsl:copy-of select="."/>
+						<!--
+                        <th><a	href="#"
 								title="{$p}"
 								xv:sortpath="{$p}"
 							   ><span><xsl:value-of select="$direction"/> <sub><xsl:value-of select="$order"/> </sub></span>
@@ -230,27 +191,21 @@ xmlns:xv="http://xmlaspect.org/XmlView"
 								<xsl:value-of select="local-name()"/>
 							</a>
 						</th>
+						-->
 					</xsl:for-each>
 				</tr>
 			</thead>
 			<tbody>
-				<xsl:for-each select="../*[name()=$childName]">
+				<xsl:for-each select="exslt:node-set($trs)/*">
 					<xsl:variable name="rowNode" select="." />
 					<tr>
-						<xsl:for-each select="$headers">
-							<xsl:variable name="key" select="name()" />
+						<xsl:for-each select="exslt:node-set($thead)/*">
+							<xsl:variable name="th" select="." />
+							<xsl:variable name="key" select="normalize-space(.)" />
 							<td>
 								<!-- xsl:attribute name="title"><xsl:apply-templates mode="xpath" select="."></xsl:apply-templates></xsl:attribute -->
-								
-		<xsl:choose>
-			<xsl:when test="count( $rowNode/*[name()=$key]) &gt; 1">
-				<xsl:apply-templates select="$rowNode/*[name()=$key][1]" mode="DisplayAsTable" />
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:apply-templates mode="DisplayContent" select="$rowNode/*[name()=$key]|$rowNode/@*[name()=$key]" />
-			</xsl:otherwise>
-		</xsl:choose>
 
+                                <xsl:apply-templates mode="DisplayContent" select="$rowNode/*[name()=$key]|$rowNode/@*[name()=$key]" />
 							</td>
 						</xsl:for-each>
 					</tr>
@@ -301,5 +256,39 @@ xmlns:xv="http://xmlaspect.org/XmlView"
 		<!-- Output the attribute's value as a predicate -->
 		<xsl:text/>[.="<xsl:value-of select="."/>"]<xsl:text/>
 	</xsl:template>
-	
+
+
+    <xvxsl:template mode="DisplayAs"	match="/SearchResult/BookSet/*[name()='Book'][1]" >
+        <i><b>/SearchResult/BookSet/Book</b></i>
+        <xsl:variable name="thead">
+            <th> Author      </th>
+            <th> BookCover   </th>
+            <th> ISBN        </th>
+            <th> ListPrice   </th>
+            <th> Price       </th>
+            <th> Synopsis    </th>
+            <th> Title       </th>
+        </xsl:variable>
+        <xsl:variable name="headStrSet">
+            <xsl:for-each select="exslt:node-set($thead)/*">|<xsl:value-of select="text()"/></xsl:for-each>
+        </xsl:variable>
+
+		
+		<xsl:variable name="headStr" select="exslt:node-set($headStrSet)/text()"/>
+
+		<xsl:call-template name="DisplayAsTable" >
+			<xsl:with-param name="collectionPath" select="'/SearchResult/BookSet/Book'"/>
+			<xsl:with-param name="collectionName" select="'Book'"/>
+			<xsl:with-param name="thead" select="$thead"/>
+            <xsl:with-param name="trs">
+                <xsl:for-each select="../*[name()='Book']">
+					<xsl:sort select="substring(normalize-space(Price),2)" order="ascending" data-type="number"/>
+					<xsl:sort select="Author" order="descending"/>
+                    <xsl:sort select="Title" order="ascending"/>
+                    <xsl:copy-of select="."/>
+                </xsl:for-each>
+            </xsl:with-param>
+        </xsl:call-template>
+    </xvxsl:template>
+
 </xsl:stylesheet>
