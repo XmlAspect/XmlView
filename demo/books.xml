@@ -10,7 +10,7 @@
   <Toolbar>
     <html:form>
       <Label>Sort by:</Label>
-      <html:input type="button" id="Author" onclick="sort(books,this.id)" value="Author"/>
+      <html:input alt="SS" type="button" id="Author" onclick="sort(books,this.id)" value="Author"/>
       <html:input type="button" id="Title" onclick="sort(books,this.id)" value="Title"/>
       <html:input type="button" id="ISBN" onclick="sort(books,this.id)" value="ISBN #"/>
       <html:input type="button" id="toggle" value="Toggle Style" onclick="initiateToggle(); return false;"/>

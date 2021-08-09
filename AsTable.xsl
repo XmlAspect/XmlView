@@ -95,15 +95,6 @@ xmlns:xvxsl="http://www.w3.org/1999/XSL/Transform"
 			</body>
 		</html>
 	</xsl:template>
-	<xsl:template match="/" priority="-20" name="BodyOnly">
-		<xsl:variable name="sortedData">
-			<xsl:call-template name="StartSort">
-				<xsl:with-param name="data" select="*" />
-			</xsl:call-template>
-		</xsl:variable>
-		<xsl:apply-templates select="exslt:node-set($sortedData)" mode="DisplayAs"/>
-	</xsl:template>
-	
 <xsl:template name="StartSort">
 	<xsl:param name="data"/>
 	<xsl:param name="sortNode"/>
@@ -128,7 +119,7 @@ xmlns:xvxsl="http://www.w3.org/1999/XSL/Transform"
 </xsl:template>
 
 <!-- skip XmlView injected data from sorting results -->	
-<xsl:template mode="SortData"		match="*[@priority='100']" priority="300"></xsl:template>
+<xsl:template mode="SortData"		match="*[@priority='100']" priority="300"/>
 
 	<xsl:template mode="DisplayAs"	match="*" ><!-- distinct tags, match to 1st  -->
         <xsl:apply-templates select="." mode="DisplayAsTree" />
@@ -173,7 +164,7 @@ xmlns:xvxsl="http://www.w3.org/1999/XSL/Transform"
 		<xsl:param name="collectionPath"/>
 		<xsl:param name="collectionName"/>
 
-		<table border="1">
+		<table border="1" data-path="{$collectionPath}">
 			<caption>
 				<var>
 					<xsl:attribute name="title"><xsl:value-of select="$collectionPath"/></xsl:attribute>
@@ -183,8 +174,7 @@ xmlns:xvxsl="http://www.w3.org/1999/XSL/Transform"
 			<thead>
 				<tr>
 					<xsl:for-each select="exslt:node-set($thead)/*">
-                        <th><a	href="#"
-								title="{text()}"
+                        <th><a	href="#{normalize-space(.)}"								
 								 class="{@order}"
 							   ><sub><xsl:value-of select="@sort"/></sub>								
 								<xsl:value-of select="text()"/>
@@ -259,13 +249,13 @@ xmlns:xvxsl="http://www.w3.org/1999/XSL/Transform"
     <xvxsl:template mode="DisplayAs"	match="/SearchResult/BookSet/*[name()='Book'][1]" >
         <i><b>/SearchResult/BookSet/Book</b></i>
         <xsl:variable name="thead">
-            <th sort="2" order="descending"	> Author      </th>
-			<th								> BookCover   </th>
-            <th								> ISBN        </th>
-            <th								> ListPrice   </th>
-			<th sort="1" order="ascending"	> Price       </th>
-            <th								> Synopsis    </th>
-			<th sort="3" order="ascending"	> Title       </th>
+            <th sort="2" order="descending"	data-field="Author"     > Author      </th>
+			<th								data-field="BookCover"  > BookCover   </th>
+            <th								data-field="ISBN"       > ISBN        </th>
+            <th								data-field="ListPrice"  > ListPrice   </th>
+			<th sort="1" order="ascending"	data-field="Price"      > Price       </th>
+            <th								data-field="Synopsis"   > Synopsis    </th>
+			<th sort="3" order="ascending"	data-field="Title"      > Title       </th>
         </xsl:variable>
         <xsl:variable name="headStrSet">
             <xsl:for-each select="exslt:node-set($thead)/*">|<xsl:value-of select="text()"/></xsl:for-each>

@@ -8,21 +8,18 @@
 	<hr />
     <main id="mainDemo"></main>
 <script type="module">
-    import {loadXml,Transform} from '../xml-toolkit.js'
+    import {loadXml,Transform, toggleSort} from '../xml-toolkit.js'
     const   modUrl  = relUrl => new URL(relUrl, import.meta.url).pathname;
     const xml        = await loadXml( modUrl('./books.xml'          ) )
-    ,     xslParams  = await loadXml( modUrl('../TableParams.xsl'   ) )
+    // ,     xslParams  = await loadXml( modUrl('../TableParams.xsl'   ) )
     ,     xslAsTable = await loadXml( modUrl('../AsTable.xsl'       ) );
 
-    const xmlParams = Transform( xml, xslParams, xml.createElement('xv:params') );
-    xslAsTable.documentElement.append(xmlParams);
-    // debugger;
+    // const xmlParams = Transform( xml, xslParams, xml.createElement('xv:params') );
+    // xslAsTable.documentElement.append(xmlParams);
     const outNode = Transform( xml, xslAsTable, mainDemo );
-console.log(xmlParams);
-// console.log(new XMLSerializer().serializeToString(xslAsTable));
-    (
-        function setClipboard(text) {
-            debugger;
+// Transform( xml, xslAsTable, mainDemo );
+    const xml2clipboard = xml =>
+    ( function setClipboard(text) {
             var type = "text/plain";
             var blob = new Blob([text], { type });
             var data = [new ClipboardItem({ [type]: blob })];
@@ -36,13 +33,26 @@ console.log(xmlParams);
                 }
             );
         }
-    )(
+    )( new XMLSerializer().serializeToString( xml ) )
 
-        new XMLSerializer()
-            .serializeToString( xmlParams )
-            // .replace( '\\n', '\n' )
-            // .replace( '\\"', '"' )
-    )
+    document.addEventListener('click', onSortCommand);
+    document.addEventListener('keypress', onKeyPress);
+
+    function onKeyPress( ev ){   if( ev.keyCode == 32 ) return onSortCommand( ev ); }
+    function onSortCommand( ev )
+    {
+        try
+        {   const p = ev.target.parentElement.parentElement.parentElement.parentElement.dataset.path
+            ,   h = ev.target.href;
+            if( !h || !h.includes('#') || !p )
+                return;
+            ev.preventDefault();
+            toggleSort( xslAsTable, p, ev.target.getAttribute('href').substring(1) );
+            Transform( xml, xslAsTable, mainDemo );
+            xml2clipboard( xslAsTable );
+        }catch( err ){}
+    }
+
 </script>
 </body>
 </html>

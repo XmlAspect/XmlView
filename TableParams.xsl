@@ -4,6 +4,7 @@
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:func="http://exslt.org/functions"
                 xmlns:xv="@xmlaspect/xml-view"
+                xmlns:xvxsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:xvp="@xmlaspect/xml-view/private"
                 xmlns:exslt="http://exslt.org/common"
                 xmlns:msxsl="urn:schemas-microsoft-com:xslt"
@@ -71,13 +72,22 @@
         <!-- unique children tags(last ones)  -->
         <xv:table>
             <xsl:attribute name="xPath"><xsl:apply-templates mode="xpath" select="$rows[1]/.."
-            />/<xsl:value-of select="$fieldTableName"
-            />
-            </xsl:attribute>
+                />/<xsl:value-of select="$fieldTableName"
+                /></xsl:attribute>
             <xsl:for-each select="exslt:node-set($uniqueFields)">
                 <xsl:apply-templates mode="reportField" select="."/>
             </xsl:for-each>
         </xv:table>
+        <xsl:element name="xvxsl:template" namespace="http://www.w3.org/1999/XSL/Transform">
+            <xsl:attribute name="mode">DisplayAs</xsl:attribute>
+            <xsl:attribute name="match"><xsl:apply-templates mode="xpath" select="$rows[1]/.."
+                />/<xsl:value-of select="$fieldTableName"
+                /></xsl:attribute>
+            <xsl:element name="xvxsl:apply-templates" namespace="http://www.w3.org/1999/XSL/Transform">
+                <xsl:attribute name="select">.</xsl:attribute>
+                <xsl:attribute name="mode">DisplayAsTable</xsl:attribute>
+            </xsl:element>
+        </xsl:element>
     </xsl:template>
 
     <xsl:template match="node()" mode="reportField"><xv:field title="{name()}"/></xsl:template>

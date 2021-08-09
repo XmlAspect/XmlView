@@ -71,8 +71,7 @@ Transform( xml, xsl, targetNode=(document.body || document.documentElement), sor
     if( 'string' === typeof t )
         t = document.querySelector(t);
     const doc = t.ownerDocument;
-    if( doc.querySelector('.XmlViewRendered') )
-        XPath_node("//xsl:template[@name='BodyOnly']", xsl ).setAttribute("priority","20");
+
 
     if ('undefined' == typeof XSLTProcessor)
     {	xsl.setProperty("AllowXsltScript", true);
@@ -132,11 +131,9 @@ UpdateSortRules( xml, xsl, sortRulesArr )
 XPath_node(xPath, node)
 {
     var d = node.ownerDocument || node
-        ,	nsResolver = d.createNSResolver && d.createNSResolver(d.documentElement);
+    ,	nsResolver = d.createNSResolver && d.createNSResolver(d.documentElement);
     if( d.evaluate )
-        return (node.ownerDocument || node)
-            .evaluate(xPath, node, nsResolver, 9, null)
-            .singleNodeValue;
+        return d.evaluate(xPath, node, nsResolver, 9, null).singleNodeValue;
     d.setProperty('SelectionLanguage', 'XPath');
     d.setProperty('SelectionNamespaces', 'xmlns:xsl="http://www.w3.org/1999/XSL/Transform"');
 
@@ -153,6 +150,16 @@ XPath_nl(xPath, node)
     d.setProperty('SelectionLanguage', 'XPath');
     d.setProperty('SelectionNamespaces', 'xmlns:xsl="http://www.w3.org/1999/XSL/Transform"');
     return node.SelectNodes( xPath );//, nsmgr );
+}
+    export function
+XPath_arr(xPath, node)
+{
+    const  nl = XPath_nl(xPath, node)
+    ,     ret = [];
+    let n;
+    while( n = nl.iterateNext() )
+        ret.push(n);
+    return ret;
 }
     export function
 Json2Xml( o, tag )
@@ -224,4 +231,53 @@ cleanElement(el)
 loadXml( url )
 {
     return new Promise( (resolve,reject)=>{ getXml(url, xml=>resolve(xml), err=>reject(err) ); })
+}
+    export function
+toggleSort( xsl, path, field )
+{
+console.log({path,field});
+    const createElement = tag => (xsl.ownerDocument || xsl).createElementNS('http://www.w3.org/1999/XSL/Transform','sort')
+    const  template = XPath_node(`//*[@mode="DisplayAs"][@match="/SearchResult/BookSet/*[name()='Book'][1]"]`, xsl);
+    const	    ths = XPath_arr (`.//xhtml:th`                                  , template);
+    const	     th = XPath_node(`.//xhtml:th[@data-field="${field}"]`          , template);
+    const sortsRoot = XPath_node(`.//*[@name="DisplayAsTable"]//xsl:for-each`    , template);
+    const  sortNode = XPath_node(`xsl:sort[contains(@select,"${field}")]`       , sortsRoot) || createElement( 'xsl:sort' );
+    const     sorts = XPath_arr (`xsl:sort[not( contains(@select,"${field}"))]` , sortsRoot);
+
+    // sort
+    sortNode.remove();
+    sorts.forEach( s=> s.remove() );
+    while( sorts.length )
+        sortsRoot.insertBefore( sorts.pop(), sortsRoot.firstChild );
+
+    const prevOrder = sortNode.getAttribute('order')
+    ,         order = prevOrder ? { ascending: 'descending', descending: '', default: 'ascending' }[prevOrder] : 'ascending';
+
+    if( order )
+    {   sortNode.setAttribute('order',order);
+        sortNode.setAttribute('select',field);
+        sortsRoot.insertBefore( sortNode, sortsRoot.firstChild );
+    }
+
+    // table headers
+    if( order )
+    {   const oldSort = th.getAttribute('sort')*1;
+        ths.map( h =>
+        {   const s = h.getAttribute('sort');
+            if( s && s*1 < oldSort )
+                h.setAttribute('sort',s+1);
+        });
+        th.setAttribute('sort','1');
+        th.setAttribute('order',order);
+    }else
+    {   const oldSort = th.getAttribute('sort')*1;
+        ths.map( h =>
+        {   const s = h.getAttribute('sort');
+            if( s && s*1 > oldSort )
+                h.setAttribute('sort',s-1);
+        });
+        th.removeAttribute('sort');
+        th.removeAttribute('order');
+    }
+
 }
