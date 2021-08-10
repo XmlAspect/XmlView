@@ -27,15 +27,15 @@ triggerSortOrder( id, ord, sortRulesArr, states )
         ord = ACS;
     }
 
-    var arr = sortRulesArr
-        ,	i = -1
-        ,	found= arr.some( function(el, n)
+    let arr = sortRulesArr
+    ,	i = -1
+    ,	found= arr.some( function(el, n)
     {
         return el.key === id && ((i=n),true);
-    } );
-    var el	= ( i < 0 )
-                ? { key:id, ord: ord }
-                : arr.splice(i,1)[0];
+    });
+    let el	= ( i < 0 )
+            ? { key:id, ord: ord }
+            : arr.splice(i,1)[0];
     el.ord = ord || states[el.ord];
     if( el.ord )
         arr.unshift(el);
@@ -171,16 +171,16 @@ Json2Xml( o, tag )
     }
     noTag &&  (tag = 'r');
     tag=tag.replace( /[^a-z0-9]/gi,'_' );
-    var oo  = {}
+    let oo  = {}
         ,   ret = [ "<"+tag+" "];
-    for( var k in o )
+    for( let k in o )
         if( typeof o[k] == "object" )
             oo[k] = o[k];
         else
             ret.push( k.replace( /[^a-z0-9]/gi,'_' ) + '="'+o[k].toString().replace(/&/gi,'&#38;')+'"');
     if( oo )
     {   ret.push(">");
-        for( var k in oo )
+        for( let k in oo )
             ret.push( Json2Xml( oo[k], k ) );
         ret.push("</"+tag+">");
     }else
@@ -196,14 +196,14 @@ getXml(url, callback, errback=()=>{})
     try { xhr.responseType = "msxml-document" } catch (err) { } // Helping IE11
     xhr.onreadystatechange = function ()
     {
-        if( 4 != xhr.readyState )
+        if( 4 !== xhr.readyState )
             return;
         try
         {
             if( xhr.responseXML )
                 return callback(xhr.responseXML);
             var txt = xhr.responseText.trim();
-            if( txt.charAt(0)!='<' )
+            if( txt.charAt(0)!=='<' )
             {
                 txt = Json2Xml( JSON.parse(txt) );
             }
@@ -235,13 +235,12 @@ loadXml( url )
     export function
 toggleSort( xsl, path, field )
 {
-console.log({path,field});
-    const createElement = tag => (xsl.ownerDocument || xsl).createElementNS('http://www.w3.org/1999/XSL/Transform','sort')
+    const createElement = tag => (xsl.ownerDocument || xsl).createElementNS('http://www.w3.org/1999/XSL/Transform',tag)
     const  template = XPath_node(`//*[@mode="DisplayAs"][@match="/SearchResult/BookSet/*[name()='Book'][1]"]`, xsl);
     const	    ths = XPath_arr (`.//xhtml:th`                                  , template);
     const	     th = XPath_node(`.//xhtml:th[@data-field="${field}"]`          , template);
     const sortsRoot = XPath_node(`.//*[@name="DisplayAsTable"]//xsl:for-each`    , template);
-    const  sortNode = XPath_node(`xsl:sort[contains(@select,"${field}")]`       , sortsRoot) || createElement( 'xsl:sort' );
+    const  sortNode = XPath_node(`xsl:sort[contains(@select,"${field}")]`       , sortsRoot) || createElement( 'sort' );
     const     sorts = XPath_arr (`xsl:sort[not( contains(@select,"${field}"))]` , sortsRoot);
 
     // sort
@@ -260,24 +259,30 @@ console.log({path,field});
     }
 
     // table headers
+    const attr = h => h.getAttribute('sort')*1;
+    const oldSort = attr(th);
     if( order )
-    {   const oldSort = th.getAttribute('sort')*1;
-        ths.map( h =>
-        {   const s = h.getAttribute('sort');
-            if( s && s*1 < oldSort )
-                h.setAttribute('sort',s+1);
+    {   ths.map( h =>
+        {   const s = attr(h);
+            let S;
+            if( oldSort )
+            {   if( s && s <= oldSort )
+                    S = s+1;
+            }else
+            {   if( s )
+                    S = s + 1;
+            }
+            S && h.setAttribute('sort',S);
         });
         th.setAttribute('sort','1');
         th.setAttribute('order',order);
     }else
-    {   const oldSort = th.getAttribute('sort')*1;
-        ths.map( h =>
+    {   ths.map( h =>
         {   const s = h.getAttribute('sort');
             if( s && s*1 > oldSort )
-                h.setAttribute('sort',s-1);
+                h.setAttribute('sort',s*1-1);
         });
         th.removeAttribute('sort');
         th.removeAttribute('order');
     }
-
 }
