@@ -286,3 +286,14 @@ toggleSort( xsl, path, field )
         th.removeAttribute('order');
     }
 }
+    export function
+text2Clipboard( text )
+{
+    document.body.focus(); // clipboard under debugger would not work without this line
+    const type = "text/plain"
+    ,     blob = new Blob([text], { type })
+    ,     data = [new ClipboardItem({ [type]: blob })];
+    return navigator.clipboard.write(data);
+}
+    export const
+xml2clipboard = xml => text2Clipboard( new XMLSerializer().serializeToString( xml ) )

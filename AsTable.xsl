@@ -6,10 +6,11 @@ file 'LICENSE', which is part of this source code package.
 <xsl:stylesheet version="1.0"
 xmlns="http://www.w3.org/1999/xhtml"
 xmlns:xhtml="http://www.w3.org/1999/xhtml"
+xmlns:html="http://www.w3.org/1999/xhtml"
 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-xmlns:func="http://exslt.org/functions" 
-xmlns:my="my://own.uri" 
-xmlns:xv="http://xmlaspect.org/XmlView" 
+xmlns:func="http://exslt.org/functions"
+xmlns:my="my://own.uri"
+xmlns:xv="http://xmlaspect.org/XmlView"
 xmlns:xvxsl="http://www.w3.org/1999/XSL/Transform"
 	xmlns:exslt="http://exslt.org/common"
 	xmlns:msxsl="urn:schemas-microsoft-com:xslt"
@@ -87,7 +88,9 @@ xmlns:xvxsl="http://www.w3.org/1999/XSL/Transform"
 				<xsl:variable name="sortedData">
 					<xsl:call-template name="StartSort">
 						<xsl:with-param name="data" select="*" />
-					</xsl:call-template>
+                        <xsl:with-param name="sortNode" select="."/>
+
+                    </xsl:call-template>
 				</xsl:variable>
 				<div class="XmlViewRendered">
 					<xsl:apply-templates select="exslt:node-set($sortedData)" mode="DisplayAs"/>
@@ -99,26 +102,26 @@ xmlns:xvxsl="http://www.w3.org/1999/XSL/Transform"
 	<xsl:param name="data"/>
 	<xsl:param name="sortNode"/>
 	<xsl:apply-templates mode="SortData" select="$data">
-		<xsl:with-param name="sortNode" select="$sortNode" />		
+		<xsl:with-param name="sortNode" select="$sortNode" />
 	</xsl:apply-templates>
 </xsl:template>
-	
-	
-	
+
+
+
 <xsl:template mode="SortData" match="*[*]" name="SortDataDefault">
 	<xsl:copy>
-		<xsl:copy-of select="@*"/>		
+		<xsl:copy-of select="@*"/>
 		<xsl:apply-templates mode="SortData" select="*">
 			<xsl:sort data-type="text" order="ascending" select="@stub-will-be-replaced"/>
 		</xsl:apply-templates>
 	</xsl:copy>
 </xsl:template>
-	
+
 <xsl:template mode="SortData" match="*[not(*)]">
 	<xsl:copy><xsl:copy-of select="@*"/><xsl:value-of select="."/></xsl:copy>
 </xsl:template>
 
-<!-- skip XmlView injected data from sorting results -->	
+<!-- skip XmlView injected data from sorting results -->
 <xsl:template mode="SortData"		match="*[@priority='100']" priority="300"/>
 
 	<xsl:template mode="DisplayAs"	match="*" ><!-- distinct tags, match to 1st  -->
@@ -133,7 +136,7 @@ xmlns:xvxsl="http://www.w3.org/1999/XSL/Transform"
 			<var><xsl:value-of select="."/></var>
 		</div>
 	</xsl:template>
-	
+
 	<xsl:template mode="DisplayAsTree" match="*" >
 		<xsl:variable name="xPath"><xsl:apply-templates mode="xpath" select="."/></xsl:variable>
 		<input type="checkbox" id="collapse{$xPath}" class="collapseControl"/>
@@ -143,7 +146,7 @@ xmlns:xvxsl="http://www.w3.org/1999/XSL/Transform"
 			<div>
 				<xsl:apply-templates select="." mode="DisplayContent"/>
 			</div>
-		</fieldset>		
+		</fieldset>
 	</xsl:template>
 	<xsl:template mode="DisplayContent" match="*">
 		<xsl:for-each select="@*|*">
@@ -154,7 +157,7 @@ xmlns:xvxsl="http://www.w3.org/1999/XSL/Transform"
 			</xsl:if>
 		</xsl:for-each>
 		<xsl:if test="normalize-space(text()) != '' ">
-			<p><xsl:value-of select="text()"/></p>	
+			<p><xsl:value-of select="text()"/></p>
 		</xsl:if>
 	</xsl:template>
 
@@ -174,9 +177,9 @@ xmlns:xvxsl="http://www.w3.org/1999/XSL/Transform"
 			<thead>
 				<tr>
 					<xsl:for-each select="exslt:node-set($thead)/*">
-                        <th><a	href="#{normalize-space(.)}"								
+                        <th><a	href="#{normalize-space(.)}"
 								 class="{@order}"
-							   ><sub><xsl:value-of select="@sort"/></sub>								
+							   ><sub><xsl:value-of select="@sort"/></sub>
 								<xsl:value-of select="text()"/>
 							</a>
 						</th>
@@ -201,7 +204,7 @@ xmlns:xvxsl="http://www.w3.org/1999/XSL/Transform"
 			</tbody>
 		</table>
 	</xsl:template>
-		
+
 	<!-- XmlAspect/XOR/XPath/Dom2XPath.xsl -->
 	<!-- Root -->
 	<xsl:template match="/" mode="xpath">
@@ -246,24 +249,21 @@ xmlns:xvxsl="http://www.w3.org/1999/XSL/Transform"
 	</xsl:template>
 
 
-    <xvxsl:template mode="DisplayAs"	match="/SearchResult/BookSet/*[name()='Book'][1]" >
+    <xvxsl:template mode="DisplayAs"	match="/SearchResult/BookSet/*[name()='Book'][1]" xml:id="tableTemplateStub">
         <i><b>/SearchResult/BookSet/Book</b></i>
         <xsl:variable name="thead">
-            <th sort="2" order="descending"	data-field="Author"     > Author      </th>
+            <th data-sort="2" data-order="descending"	data-field="Author"     > Author      </th>
 			<th								data-field="BookCover"  > BookCover   </th>
             <th								data-field="ISBN"       > ISBN        </th>
             <th								data-field="ListPrice"  > ListPrice   </th>
-			<th sort="1" order="ascending"	data-field="Price"      > Price       </th>
+			<th data-sort="1" data-order="ascending"	data-field="Price"      > Price       </th>
             <th								data-field="Synopsis"   > Synopsis    </th>
-			<th sort="3" order="ascending"	data-field="Title"      > Title       </th>
+			<th data-sort="3" data-order="ascending"	data-field="Title"      > Title       </th>
         </xsl:variable>
         <xsl:variable name="headStrSet">
             <xsl:for-each select="exslt:node-set($thead)/*">|<xsl:value-of select="text()"/></xsl:for-each>
         </xsl:variable>
-
-		
 		<xsl:variable name="headStr" select="exslt:node-set($headStrSet)/text()"/>
-
 		<xsl:call-template name="DisplayAsTable" >
 			<xsl:with-param name="collectionPath" select="'/SearchResult/BookSet/Book'"/>
 			<xsl:with-param name="collectionName" select="'Book'"/>
