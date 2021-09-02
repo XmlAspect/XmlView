@@ -16,6 +16,8 @@
     ,          nsUri = xml.lookupNamespaceURI(null) || "urn:xml-view:source-ns";
 
     [xml,xslParams,xslAsTable].map( x=>x.documentElement.setAttribute("xmlns:xvs", nsUri) );
+    if( !xml.documentElement.getAttribute("xmlns") )
+        xml.documentElement.setAttribute("xmlns", nsUri);
 
     debugger;
     const xmlParams = Transform( xml, xslParams, xml.createElement('xv:params') );

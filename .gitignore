@@ -2,3 +2,5 @@
 dest/
 node_modules/
 dist/
+.vs
+.vscode

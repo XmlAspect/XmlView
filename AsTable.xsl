@@ -126,7 +126,6 @@ file 'LICENSE', which is part of this source code package.
             <xsl:apply-templates mode="Render" select="*"/>
         </fieldset>
     </xsl:template>
-
     <xsl:template mode="Render" match="*[not(*)]"><!-- no children, display attributes -->
         <!-- todo template for each attribute for ability to override -->
         <div style="color: green">
@@ -138,9 +137,7 @@ file 'LICENSE', which is part of this source code package.
             </var>
         </div>
     </xsl:template>
-
-    <xsl:template name=
-"DisplayAsTable" >
+    <xsl:template name="DisplayAsTable" >
         <xsl:param name="thead" />
         <xsl:param name="trs" select="*"/>
         <xsl:param name="collectionPath"/>
@@ -187,4 +184,7 @@ file 'LICENSE', which is part of this source code package.
         </table>
     </xsl:template>
 
+    <xvxsl:template mode="Render" match="html:img">
+        <img><xsl:copy-of select="@*"/></img>
+    </xvxsl:template>
 </xsl:stylesheet>

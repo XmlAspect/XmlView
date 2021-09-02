@@ -67,7 +67,8 @@
         <xsl:param name="fieldTableName" select="name($rows[1])"/>
 
         <xsl:variable name="xPath"><xsl:apply-templates mode="xpath" select="$rows[1]/.."
-            />/<xsl:value-of select="$fieldTableName"
+            />/<xsl:if test="namespace-uri(.)=namespace-uri(/*[1])"><xsl:value-of select="'xvs:'"
+            /></xsl:if><xsl:value-of select="$fieldTableName"
             /></xsl:variable>
         <xsl:variable name="uniqueFields">
 			<xsl:call-template name="FilterUnique">
@@ -204,7 +205,7 @@
         <xsl:if test="../..">/</xsl:if>
 
         <!-- Output the name of the element -->
-        <xsl:if test="namespace-uri(.)=namespace-uri(/*[position()=1])"><xsl:value-of select="'xvs:'"/></xsl:if>
+        <xsl:if test="namespace-uri(.)=namespace-uri(/*[1])"><xsl:value-of select="'xvs:'"/></xsl:if>
 
         <xsl:value-of select="name()"/>
 
