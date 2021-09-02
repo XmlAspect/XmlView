@@ -140,6 +140,18 @@ XPath_node(xPath, node)
     return node.selectSingleNode( xPath );//,nsmgr )
 }
     export function
+XPath_str(xPath, node)
+{
+    var d = node.ownerDocument || node
+    ,	nsResolver = d.createNSResolver && d.createNSResolver(d.documentElement);
+    if( d.evaluate )
+        return d.evaluate(xPath, node, nsResolver, 0, null).stringValue;
+    d.setProperty('SelectionLanguage', 'XPath');
+    d.setProperty('SelectionNamespaces', 'xmlns:xsl="http://www.w3.org/1999/XSL/Transform"');
+
+    return node.selectSingleNode( xPath );//,nsmgr )
+}
+    export function
 XPath_nl(xPath, node)
 {
     var d = node.ownerDocument || node

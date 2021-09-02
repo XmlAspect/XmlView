@@ -8,12 +8,16 @@
 	<hr />
     <main id="mainDemo"></main>
 <script type="module">
-    import {loadXml,Transform, toggleSort, xml2clipboard,XPath_arr} from '../xml-toolkit.js'
+    import {loadXml,Transform, toggleSort, xml2clipboard,XPath_arr, XPath_node,XPath_str} from '../xml-toolkit.js'
     const   modUrl  = relUrl => new URL(relUrl, import.meta.url).pathname;
     const xml        = await loadXml( modUrl('./zbooks.xml'          ) )
     ,     xslParams  = await loadXml( modUrl('./TableParams.xsl'   ) )
-    ,     xslAsTable = await loadXml( modUrl('./AsTable.xsl'       ) );
+    ,     xslAsTable = await loadXml( modUrl('./AsTable.xsl'       ) )
+    ,          nsUri = xml.lookupNamespaceURI(null) || "urn:xml-view:source-ns";
 
+    [xml,xslParams,xslAsTable].map( x=>x.documentElement.setAttribute("xmlns:xvs", nsUri) );
+
+    debugger;
     const xmlParams = Transform( xml, xslParams, xml.createElement('xv:params') );
 
     // xml2clipboard(xmlParams);

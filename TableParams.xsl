@@ -5,7 +5,6 @@
                 xmlns:func="http://exslt.org/functions"
                 xmlns:xv="@xmlaspect/xml-view"
                 xmlns:xvxsl="http://www.w3.org/1999/XSL/TransformAlias"
-                xmlns:xvp="@xmlaspect/xml-view/private"
                 xmlns:exslt="http://exslt.org/common"
                 xmlns:msxsl="urn:schemas-microsoft-com:xslt"
                 exclude-result-prefixes="exslt msxsl"
@@ -79,31 +78,35 @@
             </xsl:call-template>
         </xsl:variable>
 
-        <xvxsl:template mode="DisplayAs" match="{$xPath}">
-            <i><b><xsl:value-of select="$xPath" /></b></i>
-            <xvxsl:variable name="thead">
-                <xsl:for-each select="exslt:node-set($uniqueFields)">
-                    <xsl:apply-templates mode="reportField" select="."/>
-                </xsl:for-each>
-            </xvxsl:variable>
-            <xvxsl:variable name="headStrSet">
-                <xvxsl:for-each select="exslt:node-set($thead)/*">|<xvxsl:value-of select="text()"/></xvxsl:for-each>
-            </xvxsl:variable>
-            <xvxsl:variable name="headStr" select="exslt:node-set($headStrSet)/text()"/>
-            <xvxsl:call-template name="DisplayAsTable" >
-                <xvxsl:with-param name="collectionPath" select="'{$xPath}'"/>
-                <xvxsl:with-param name="collectionName" select="'{$fieldTableName}'"/>
-                <xvxsl:with-param name="thead" select="$thead"/>
-                <xvxsl:with-param name="trs">
-                    <xvxsl:for-each select="../*[name()='{$fieldTableName}']">
-                        <xvxsl:sort select="substring(normalize-space(Price),2)" order="ascending" data-type="number"/>
-                        <xvxsl:sort select="Author"   order="descending"  />
-                        <xvxsl:sort select="Title"    order="ascending"   />
-                        <xvxsl:copy-of select="."/>
-                    </xvxsl:for-each>
-                </xvxsl:with-param>
-            </xvxsl:call-template>
+        <xvxsl:template mode="Render" match="{$xPath}">
+            <xvxsl:variable name="tagName" select="name()"/>
+            <xvxsl:if test="not(following-sibling::*[name()=$tagName])">
 
+                <i><b><xsl:value-of select="$xPath" /></b></i>
+                <xvxsl:variable name="thead">
+                    <xsl:for-each select="exslt:node-set($uniqueFields)">
+                        <xsl:apply-templates mode="reportField" select="."/>
+                    </xsl:for-each>
+                </xvxsl:variable>
+                <xvxsl:variable name="headStrSet">
+                    <xvxsl:for-each select="exslt:node-set($thead)/*">|<xvxsl:value-of select="text()"/></xvxsl:for-each>
+                </xvxsl:variable>
+                <xvxsl:variable name="headStr" select="exslt:node-set($headStrSet)/text()"/>
+                <xvxsl:call-template name="DisplayAsTable" >
+                    <xvxsl:with-param name="collectionPath" select="'{$xPath}'"/>
+                    <xvxsl:with-param name="collectionName" select="'{$fieldTableName}'"/>
+                    <xvxsl:with-param name="thead" select="$thead"/>
+                    <xvxsl:with-param name="trs">
+                        <xvxsl:for-each select="../*[name()='{$fieldTableName}']">
+                            <xvxsl:sort select="substring(normalize-space(Price),2)" order="ascending" data-type="number"/>
+                            <xvxsl:sort select="Author"   order="descending"  />
+                            <xvxsl:sort select="Title"    order="ascending"   />
+                            <xvxsl:copy-of select="."/>
+                        </xvxsl:for-each>
+                    </xvxsl:with-param>
+                </xvxsl:call-template>
+
+            </xvxsl:if>
         </xvxsl:template>
 
 
@@ -201,6 +204,8 @@
         <xsl:if test="../..">/</xsl:if>
 
         <!-- Output the name of the element -->
+        <xsl:if test="namespace-uri(.)=namespace-uri(/*[position()=1])"><xsl:value-of select="'xvs:'"/></xsl:if>
+
         <xsl:value-of select="name()"/>
 
         <!-- Add the element's position to pinpoint the element exactly -->
