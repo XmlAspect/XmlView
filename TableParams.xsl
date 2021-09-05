@@ -4,6 +4,7 @@
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:func="http://exslt.org/functions"
                 xmlns:xv="@xmlaspect/xml-view"
+                xmlns:xvs="urn:xml-view:source-ns"
                 xmlns:xvxsl="http://www.w3.org/1999/XSL/TransformAlias"
                 xmlns:exslt="http://exslt.org/common"
                 xmlns:msxsl="urn:schemas-microsoft-com:xslt"
@@ -67,7 +68,7 @@
         <xsl:param name="fieldTableName" select="name($rows[1])"/>
 
         <xsl:variable name="xPath"><xsl:apply-templates mode="xpath" select="$rows[1]/.."
-            />/<xsl:if test="namespace-uri(.)=namespace-uri(/*[1])"><xsl:value-of select="'xvs:'"
+            />/<xsl:if test="namespace-uri(.)='urn:xml-view:source-ns'"><xsl:value-of select="'xvs:'"
             /></xsl:if><xsl:value-of select="$fieldTableName"
             /></xsl:variable>
         <xsl:variable name="uniqueFields">
@@ -78,8 +79,9 @@
                 <xsl:with-param name="nodes" select="$rows[name()=$fieldTableName]/*"/>
             </xsl:call-template>
         </xsl:variable>
-
-        <xvxsl:template mode="Render" match="{$xPath}">
+        <!--
+        -->
+        <xvxsl:template mode="Render" match="{$xPath}" priority="3">
             <xvxsl:variable name="tagName" select="name()"/>
             <xvxsl:if test="not(following-sibling::*[name()=$tagName])">
 
@@ -93,64 +95,54 @@
                     <xvxsl:for-each select="exslt:node-set($thead)/*">|<xvxsl:value-of select="text()"/></xvxsl:for-each>
                 </xvxsl:variable>
                 <xvxsl:variable name="headStr" select="exslt:node-set($headStrSet)/text()"/>
-                <xvxsl:call-template name="DisplayAsTable" >
-                    <xvxsl:with-param name="collectionPath" select="'{$xPath}'"/>
-                    <xvxsl:with-param name="collectionName" select="'{$fieldTableName}'"/>
-                    <xvxsl:with-param name="thead" select="$thead"/>
-                    <xvxsl:with-param name="trs">
-                        <xvxsl:for-each select="../*[name()='{$fieldTableName}']">
-                            <xvxsl:sort select="substring(normalize-space(Price),2)" order="ascending" data-type="number"/>
-                            <xvxsl:sort select="Author"   order="descending"  />
-                            <xvxsl:sort select="Title"    order="ascending"   />
-                            <xvxsl:copy-of select="."/>
-                        </xvxsl:for-each>
-                    </xvxsl:with-param>
-                </xvxsl:call-template>
+                <xvxsl:variable name="collectionPath" select="'{$xPath}'"/>
+                <xvxsl:variable name="collectionName" select="'{$fieldTableName}'"/>
 
+                <table>
+                    <xvxsl:call-template name="DisplayAsTableHead">
+                      <xvxsl:with-param name="thead" select="$thead"/>
+                      <xvxsl:with-param name="collectionPath" select="$collectionPath"/>
+                      <xvxsl:with-param name="collectionName" select="$collectionName"/>
+                    </xvxsl:call-template>
+                    <tbody>
+                      <xvxsl:for-each select="../*[name()='{$fieldTableName}']">
+                          <xvxsl:sort select="substring(normalize-space(Price),2)" order="ascending" data-type="number"/>
+                          <xvxsl:sort select="Author"   order="descending"  />
+                          <xvxsl:sort select="Title"    order="ascending"   />
+                        <xvxsl:variable name="rowNode" select="." />
+                            <tr>
+                              <xvxsl:for-each select="exslt:node-set($thead)/*">
+                                <xvxsl:variable name="th" select="." />
+                                <xvxsl:variable name="key" select="normalize-space($th[1]/@data-field)"/>
+                                <xvxsl:variable name="attrName" ><xvxsl:if test="substring($key,1,1)='@'"
+                                    >
+                                  <xvxsl:value-of select="substring($key,2)" /></xvxsl:if></xvxsl:variable>
+
+                                    <td>
+                                        <!-- xsl:attribute name="title"><xsl:apply-templates mode="xpath" select="."></xsl:apply-templates></xsl:attribute -->
+
+                                      <xvxsl:apply-templates mode="Render" select="$rowNode/*[name()=$key]|$rowNode/@*[name()=$attrName]"/>
+                                    </td>
+                                </xvxsl:for-each>
+                            </tr>
+                        </xvxsl:for-each>
+                    </tbody>
+                </table>
             </xvxsl:if>
         </xvxsl:template>
-
-
     </xsl:template>
 
 
 
 
 
-    <xsl:template name="DisplayAsTable" ></xsl:template><!-- stub in this XSL, actual implementation is in AsTable.xsl  -->
-
-    <xsl:template mode="DisplayAs"	match="/SearchResult/BookSet/*[name()='Book'][1]" xml:id="tableTemplateStub">
-        <i><b>/SearchResult/BookSet/Book</b></i>
-        <xsl:variable name="thead">
-            <th sort="2" order="descending"	data-field="Author"     > Author      </th>
-            <th								data-field="BookCover"  > BookCover   </th>
-            <th								data-field="ISBN"       > ISBN        </th>
-            <th								data-field="ListPrice"  > ListPrice   </th>
-            <th sort="1" order="ascending"	data-field="Price"      > Price       </th>
-            <th								data-field="Synopsis"   > Synopsis    </th>
-            <th sort="3" order="ascending"	data-field="Title"      > Title       </th>
-        </xsl:variable>
-        <xsl:variable name="headStrSet">
-            <xsl:for-each select="exslt:node-set($thead)/*">|<xsl:value-of select="text()"/></xsl:for-each>
-        </xsl:variable>
-
-
-        <xsl:variable name="headStr" select="exslt:node-set($headStrSet)/text()"/>
-
-        <xsl:call-template name="DisplayAsTable" >
-            <xsl:with-param name="collectionPath" select="'/SearchResult/BookSet/Book'"/>
-            <xsl:with-param name="collectionName" select="'Book'"/>
-            <xsl:with-param name="thead" select="$thead"/>
-            <xsl:with-param name="trs">
-                <xsl:for-each select="../*[name()='Book']">
-                    <xsl:sort select="substring(normalize-space(Price),2)" order="ascending" data-type="number"/>
-                    <xsl:sort select="Author"   order="descending"  />
-                    <xsl:sort select="Title"    order="ascending"   />
-                    <xsl:copy-of select="."/>
-                </xsl:for-each>
-            </xsl:with-param>
-        </xsl:call-template>
+    <xsl:template name="Render" /> <!-- stub in this XSL, actual implementation is in AsTable.xsl  -->
+    <xsl:template name="DisplayAsTableHead" > <!-- stub in this XSL, actual implementation is in AsTable.xsl  -->
+        <xsl:param name="thead" />
+        <xsl:param name="collectionPath"/>
+        <xsl:param name="collectionName"/>
     </xsl:template>
+
 
     <xsl:template match="*" mode="reportField">
         <th data-field="{name()}"> <xsl:value-of select="name()" /> </th>
@@ -205,7 +197,7 @@
         <xsl:if test="../..">/</xsl:if>
 
         <!-- Output the name of the element -->
-        <xsl:if test="namespace-uri(.)=namespace-uri(/*[1])"><xsl:value-of select="'xvs:'"/></xsl:if>
+        <xsl:if test="namespace-uri(.)='urn:xml-view:source-ns'"><xsl:value-of select="'xvs:'"/></xsl:if>
 
         <xsl:value-of select="name()"/>
 

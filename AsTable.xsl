@@ -126,7 +126,7 @@ file 'LICENSE', which is part of this source code package.
             <xsl:apply-templates mode="Render" select="*"/>
         </fieldset>
     </xsl:template>
-    <xsl:template mode="Render" match="*[not(*)]"><!-- no children, display attributes -->
+    <xsl:template mode="Render" match="*[not(*)]" priority="1"><!-- no children, display attributes -->
         <!-- todo template for each attribute for ability to override -->
         <div style="color: green">
             <label>
@@ -137,51 +137,30 @@ file 'LICENSE', which is part of this source code package.
             </var>
         </div>
     </xsl:template>
-    <xsl:template name="DisplayAsTable" >
+
+    <xsl:template name="DisplayAsTableHead" >
         <xsl:param name="thead" />
-        <xsl:param name="trs" select="*"/>
         <xsl:param name="collectionPath"/>
         <xsl:param name="collectionName"/>
 
-        <table border="1" data-path="{$collectionPath}">
-            <caption>
-                <var>
-                    <xsl:attribute name="title"><xsl:value-of select="$collectionPath"/></xsl:attribute>
-                    <xsl:value-of select="$collectionName"/>
-                </var>
-            </caption>
-            <thead>
-                <tr>
-                    <xsl:for-each select="exslt:node-set($thead)/*">
-                        <th><a	href="#{normalize-space(.)}"
-                                  class="{@order}"
-                        ><sub><xsl:value-of select="@sort"/></sub>
-                            <xsl:value-of select="text()"/>
-                        </a>
-                        </th>
-                    </xsl:for-each>
-                </tr>
-            </thead>
-            <tbody>
-                <xsl:for-each select="exslt:node-set($trs)/*">
-                    <xsl:variable name="rowNode" select="." />
-                    <tr>
-                        <xsl:for-each select="exslt:node-set($thead)/*">
-                            <xsl:variable name="th" select="." />
-                            <xsl:variable name="key" select="normalize-space($th[1]/@data-field)"/>
-                            <xsl:variable name="attrName" ><xsl:if test="substring($key,1,1)='@'"
-                            ><xsl:value-of select="substring($key,2)" /></xsl:if></xsl:variable>
-
-                            <td>
-                                <!-- xsl:attribute name="title"><xsl:apply-templates mode="xpath" select="."></xsl:apply-templates></xsl:attribute -->
-
-                                <xsl:apply-templates mode="Render" select="$rowNode/*[name()=$key]|$rowNode/@*[name()=$attrName]"/>
-                            </td>
-                        </xsl:for-each>
-                    </tr>
+        <caption>
+            <var>
+                <xsl:attribute name="title"><xsl:value-of select="$collectionPath"/></xsl:attribute>
+                <xsl:value-of select="$collectionName"/>
+            </var>
+        </caption>
+        <thead>
+            <tr>
+                <xsl:for-each select="exslt:node-set($thead)/*">
+                    <th><a	href="#{normalize-space(.)}"
+                              class="{@order}"
+                    ><sub><xsl:value-of select="@sort"/></sub>
+                        <xsl:value-of select="text()"/>
+                    </a>
+                    </th>
                 </xsl:for-each>
-            </tbody>
-        </table>
+            </tr>
+        </thead>
     </xsl:template>
 
     <xvxsl:template mode="Render" match="html:img">
