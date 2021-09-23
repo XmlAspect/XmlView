@@ -7,6 +7,7 @@ file 'LICENSE', which is part of this source code package.
                 xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:xhtml="http://www.w3.org/1999/xhtml"
                 xmlns:html="http://www.w3.org/1999/xhtml"
+                xmlns:xlink="http://www.w3.org/1999/xlink"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:func="http://exslt.org/functions"
                 xmlns:xvxsl="http://www.w3.org/1999/XSL/Transform"
@@ -42,9 +43,8 @@ file 'LICENSE', which is part of this source code package.
                 <title>XmlView - XmlAspect.org</title>
                 <style><![CDATA[
                     body{padding:0;margin:0;}
-                    table {border-collapse:collapse; width:100%; font-family: "HelveticaNeue-Light", "Helvetica Neue
-                    Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;}
-                    caption{ text-align:left; }
+                    table {border-collapse:collapse; width:100%; font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;}
+                    caption{ text-align:start; }
                     th {background-image: linear-gradient(to bottom, #0F1FFF 0%, #AAAACC 100%); font-size:large;}
                     tr:nth-child(even) {background-image: linear-gradient(to bottom, rgba(9, 16, 11, 0.2) 0%, rgba(90,
                     164, 110, 0.1) 100%);}
@@ -128,6 +128,20 @@ file 'LICENSE', which is part of this source code package.
             <xsl:apply-templates mode="Render" select="*"/>
         </fieldset>
     </xsl:template>
+    <xsl:template mode="RenderCell" match="*">
+        <xsl:value-of select="."/>
+    </xsl:template>
+    <xsl:template mode="RenderCell" match="*[@*]">
+        <table>
+            <xsl:apply-templates mode="Render" select="@*"/>
+        </table>
+        <xsl:if test="not(*)"><xsl:value-of select="."/></xsl:if>
+        <xsl:if test="*"><xsl:apply-templates mode="Render" select="*"/></xsl:if>
+    </xsl:template>
+    <xsl:template mode="RenderCell" match="*[@xlink:href|@href]">
+        <xsl:variable name="link"><xsl:value-of select="@href"/><xsl:value-of select="@xlink:href"/></xsl:variable>
+        <a href="{$link}"><xsl:value-of select="."/></a>
+    </xsl:template>
     <xsl:template mode="Render" match="@*">
         <tr style="color: green">
             <th>
@@ -158,10 +172,8 @@ file 'LICENSE', which is part of this source code package.
         <xsl:param name="collectionName"/>
 
         <caption>
-            <var>
                 <xsl:attribute name="title"><xsl:value-of select="$collectionPath"/></xsl:attribute>
                 <xsl:value-of select="$collectionName"/>
-            </var>
         </caption>
         <thead>
             <tr>

@@ -85,7 +85,6 @@
             <xvxsl:variable name="tagName" select="name()"/>
             <xvxsl:if test="not(following-sibling::*[name()=$tagName])">
 
-                <i><b><xsl:value-of select="$xPath" /></b></i>
                 <xvxsl:variable name="thead">
                     <xsl:for-each select="exslt:node-set($uniqueFields)">
                         <xsl:apply-templates mode="reportField" select="."/>
@@ -121,7 +120,7 @@
                                     <td>
                                         <!-- xsl:attribute name="title"><xsl:apply-templates mode="xpath" select="."></xsl:apply-templates></xsl:attribute -->
 
-                                      <xvxsl:apply-templates mode="Render" select="$rowNode/*[name()=$key]|$rowNode/@*[name()=$attrName]"/>
+                                      <xvxsl:apply-templates mode="RenderCell" select="$rowNode/*[name()=$key]|$rowNode/@*[name()=$attrName]"/>
                                     </td>
                                 </xvxsl:for-each>
                             </tr>

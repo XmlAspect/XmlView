@@ -10,7 +10,8 @@
 <script type="module">
     import {loadXml,Transform, toggleSort, xml2clipboard,XPath_arr, XPath_node,XPath_str} from '../xml-toolkit.js'
     const   modUrl  = relUrl => new URL(relUrl, import.meta.url).pathname;
-    const xml        = await loadXml( modUrl('./zbooks.xml'          ) )
+    // const xml        = await loadXml( modUrl('./zbooks.xml'          ) )
+    const xml        = await loadXml( modUrl('demo/books.xml'          ) )
     ,     xslParams  = await loadXml( modUrl('./TableParams.xsl'   ) )
     ,     xslAsTable = await loadXml( modUrl('./AsTable.xsl'       ) )
     ,          nsUri = xml.lookupNamespaceURI(null) || "urn:xml-view:source-ns";
