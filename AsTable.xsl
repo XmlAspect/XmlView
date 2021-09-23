@@ -40,7 +40,7 @@ file 'LICENSE', which is part of this source code package.
         <html>
             <head>
                 <title>XmlView - XmlAspect.org</title>
-                <style>
+                <style><![CDATA[
                     body{padding:0;margin:0;}
                     table {border-collapse:collapse; width:100%; font-family: "HelveticaNeue-Light", "Helvetica Neue
                     Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;}
@@ -77,6 +77,8 @@ file 'LICENSE', which is part of this source code package.
                     legend label b, legend label i{ margin-right: 0.5em; }
                     a.ascending:before{ content:'\25B2'; }
                     a.descending:before{ content:'\25BC'; }
+                    label+var{ margin-left:1rem; }
+                    ]]>
                 </style>
                 <script type="module" src="{$baseUrl}XmlView.js">/**/</script>
             </head>
@@ -126,16 +128,28 @@ file 'LICENSE', which is part of this source code package.
             <xsl:apply-templates mode="Render" select="*"/>
         </fieldset>
     </xsl:template>
+    <xsl:template mode="Render" match="@*">
+        <tr style="color: green">
+            <th>
+                <xsl:value-of select="name()"/>
+            </th>
+            <td>
+                <xsl:value-of select="."/>
+            </td>
+        </tr>
+    </xsl:template>
+
     <xsl:template mode="Render" match="*[not(*)]" priority="1"><!-- no children, display attributes -->
         <!-- todo template for each attribute for ability to override -->
-        <div style="color: green">
-            <label>
+        <fieldset>
+            <legend>
                 <xsl:value-of select="name()"/>
-            </label>
-            <var>
-                <xsl:value-of select="."/>
-            </var>
-        </div>
+            </legend>
+            <table>
+                <xsl:apply-templates mode="Render" select="@*"/>
+            </table>
+            <xsl:value-of select="."/>
+        </fieldset>
     </xsl:template>
 
     <xsl:template name="DisplayAsTableHead" >
@@ -163,7 +177,7 @@ file 'LICENSE', which is part of this source code package.
         </thead>
     </xsl:template>
 
-    <xvxsl:template mode="Render" match="html:img">
+    <xvxsl:template mode="Render" match="html:img" priority="4">
         <img><xsl:copy-of select="@*"/></img>
     </xvxsl:template>
 </xsl:stylesheet>
