@@ -128,6 +128,13 @@ file 'LICENSE', which is part of this source code package.
             <xsl:apply-templates mode="Render" select="*"/>
         </fieldset>
     </xsl:template>
+    <xsl:template mode="Render" match="*[not(*)]">
+            <label>
+                <xsl:value-of select="name()"/>
+            </label>
+            <xsl:value-of select="*"/>
+    </xsl:template>
+
     <xsl:template mode="RenderCell" match="*">
         <xsl:value-of select="."/>
     </xsl:template>
@@ -137,6 +144,9 @@ file 'LICENSE', which is part of this source code package.
         </table>
         <xsl:if test="not(*)"><xsl:value-of select="."/></xsl:if>
         <xsl:if test="*"><xsl:apply-templates mode="Render" select="*"/></xsl:if>
+    </xsl:template>
+    <xsl:template mode="RenderCell" match="*[*]">
+            <xsl:apply-templates mode="Render" select="*"/>
     </xsl:template>
     <xsl:template mode="RenderCell" match="*[@xlink:href|@href]">
         <xsl:variable name="link"><xsl:value-of select="@href"/><xsl:value-of select="@xlink:href"/></xsl:variable>
@@ -152,8 +162,7 @@ file 'LICENSE', which is part of this source code package.
             </td>
         </tr>
     </xsl:template>
-
-    <xsl:template mode="Render" match="*[not(*)]" priority="1"><!-- no children, display attributes -->
+    <xsl:template mode="Render" match="*[not(*)][@*]" priority="1"><!-- no children, display attributes -->
         <!-- todo template for each attribute for ability to override -->
         <fieldset>
             <legend>
@@ -165,6 +174,21 @@ file 'LICENSE', which is part of this source code package.
             <xsl:value-of select="."/>
         </fieldset>
     </xsl:template>
+    <xsl:template mode="Render" match="*[not(*)][not(@*)]" priority="1">
+        <!-- no children, no attributes, display text -->
+        <table>
+            <tr>
+                <th>
+                    <xsl:value-of select="name()"/>
+                </th>
+                <td>
+                    <xsl:value-of select="."/>
+                </td>
+            </tr>
+            <xsl:apply-templates mode="Render" select="@*"/>
+        </table>
+    </xsl:template>
+
 
     <xsl:template name="DisplayAsTableHead" >
         <xsl:param name="thead" />
