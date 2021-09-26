@@ -97,7 +97,7 @@
                 <xvxsl:variable name="collectionPath" select="'{$xPath}'"/>
                 <xvxsl:variable name="collectionName" select="'{$fieldTableName}'"/>
 
-                <table>
+                <table data-path="{$xPath}">
                     <xvxsl:call-template name="DisplayAsTableHead">
                       <xvxsl:with-param name="thead" select="$thead"/>
                       <xvxsl:with-param name="collectionPath" select="$collectionPath"/>

@@ -248,10 +248,10 @@ loadXml( url )
 toggleSort( xsl, path, field )
 {
     const createElement = tag => (xsl.ownerDocument || xsl).createElementNS('http://www.w3.org/1999/XSL/Transform',tag)
-    const  template = XPath_node(`//*[@mode="DisplayAs"][@match="/SearchResult/BookSet/*[name()='Book'][1]"]`, xsl);
+    const  template = XPath_node(`//*[@match="${path}"]`,xsl);
     const	    ths = XPath_arr (`.//xhtml:th`                                  , template);
     const	     th = XPath_node(`.//xhtml:th[@data-field="${field}"]`          , template);
-    const sortsRoot = XPath_node(`.//*[@name="DisplayAsTable"]//xsl:for-each`    , template);
+    const sortsRoot = XPath_node(`.//html:tbody/xvxsl:for-each`                 , template);
     const  sortNode = XPath_node(`xsl:sort[contains(@select,"${field}")]`       , sortsRoot) || createElement( 'sort' );
     const     sorts = XPath_arr (`xsl:sort[not( contains(@select,"${field}"))]` , sortsRoot);
 
